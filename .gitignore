@@ -1,0 +1,6 @@
+.gradle
+.idea
+build/
+bin/
+rc/main/resources/application.*
+src/main/resources/application-local.*

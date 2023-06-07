@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class RsvpController {
 
@@ -19,7 +21,7 @@ public class RsvpController {
     }
 
     @PostMapping("/rsvp")
-    Rsvp getRsvp(@RequestBody Rsvp rsvp) {
+    List<Rsvp> getRsvp(@RequestBody Rsvp rsvp) {
         return rsvpService.findAllByPasscode(rsvp.getPasscode());
     }
 }

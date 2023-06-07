@@ -8,11 +8,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.List;
 
 @Repository
 public interface RsvpRepository extends JpaRepository<Rsvp, Long> {
 
-    @Query("SELECT id, passcode, dietaryRestrictions, foodAllergies, email, name, attending " +
-            "FROM Rsvp where passcode = :passcode")
-    Rsvp findRsvpByPasscode(@Param("passcode") String passcode);
+//    @Query("SELECT id, passcode, dietaryRestrictions, foodAllergies, email, name, attending " +
+//            "FROM Rsvp where passcode = :passcode")
+//    Rsvp findRsvpByPasscode(@Param("passcode") String passcode);
+
+    @Query("select r from Rsvp r where r.passcode = ?1")
+    List<Rsvp> findByPasscode(String passcode);
 }

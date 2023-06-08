@@ -20,9 +20,6 @@ public class Rsvp {
     public Rsvp() {}
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
-
     @NonNull
     private String passcode;
 

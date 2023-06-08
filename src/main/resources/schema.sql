@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS rsvp (
-    id BIGSERIAL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    passcode VARCHAR(5) UNIQUE,
+    passcode VARCHAR(5) PRIMARY KEY UNIQUE,
     dietary_restrictions VARCHAR(28)[],
     food_allergies VARCHAR(28)[],
     email VARCHAR(254) UNIQUE,

@@ -9,15 +9,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
+/**
+ * @Data
+ * @Entity
+ * @Builder
+ * @NoArgsConstructor
+ * @AllArgsConstructor
+ * @Table(name = "component_xref")
+ * @Schema(description = SUB_COMPONENT_REF_DESCRIPTION)
+ * @IdClass(SubComponentRef.SubComponentRefId.class)
+ */
+
 @Entity
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
+@Builder
 @Table(name = "rsvp")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Rsvp {
-
-    public Rsvp() {}
 
     @Id
     @NonNull
@@ -25,10 +38,12 @@ public class Rsvp {
 
     @Enumerated(EnumType.STRING)
     @OrderColumn(name = "dietary_restrictions")
+    @Builder.Default
     private List<DietaryRestriction> dietaryRestrictions = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "food_allergies")
+    @Builder.Default
     private List<FoodAllergies> foodAllergies = new ArrayList<>();
 
     @NonNull
@@ -38,4 +53,7 @@ public class Rsvp {
     private String name;
 
     private boolean attending;
+
+    @Column(name = "accompanying_guests")
+    private int accompanyingGuests;
 }

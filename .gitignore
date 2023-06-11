@@ -2,5 +2,7 @@
 .idea
 build/
 bin/
-rc/main/resources/application.*
+src/main/resources/application.*
 src/main/resources/application-local.*
+src/test/resources/application.*
+src/test/resources/application-local.*

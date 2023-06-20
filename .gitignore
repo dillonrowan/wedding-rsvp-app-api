@@ -4,5 +4,7 @@ build/
 bin/
 src/main/resources/application.*
 src/main/resources/application-local.*
+src/main/resources/application-test.*
 src/test/resources/application.*
 src/test/resources/application-local.*
+src/test/resources/application-test.*

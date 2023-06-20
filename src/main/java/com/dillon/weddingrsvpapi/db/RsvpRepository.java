@@ -3,6 +3,7 @@ package com.dillon.weddingrsvpapi.db;
 import com.dillon.weddingrsvpapi.dto.DietaryRestriction;
 import com.dillon.weddingrsvpapi.dto.FoodAllergies;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,7 +15,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Repository
-public interface RsvpRepository extends JpaRepository<Rsvp, Long> {
+public interface RsvpRepository extends JpaRepository<Rsvp, String> {
 
 //    @Query("SELECT id, passcode, dietaryRestrictions, foodAllergies, email, name, attending " +
 //            "FROM Rsvp where passcode = :passcode")

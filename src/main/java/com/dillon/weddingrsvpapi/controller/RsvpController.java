@@ -23,8 +23,8 @@ public class RsvpController {
         return rsvpService.findAllByPasscode(rsvp.getPasscode());
     }
 
-    @PostMapping("/update_rsvp")
-    void updateRsvp(@RequestBody Rsvp rsvp) {
-        rsvpService.updateRsvp(rsvp);
+    @PostMapping("/upsert_rsvp")
+    public void upsertRsvp(@RequestBody Rsvp rsvp) {
+        rsvpService.upsertRsvp(rsvp);
     }
 }

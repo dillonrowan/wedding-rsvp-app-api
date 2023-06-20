@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS rsvp (
     food_allergies VARCHAR(28)[],
     email VARCHAR(254) UNIQUE,
     name VARCHAR(28),
-    attending BOOLEAN DEFAULT FALSE
+    attending BOOLEAN DEFAULT FALSE,
+    accompanying_guests int DEFAULT 0
 );

@@ -20,7 +20,7 @@ public class RsvpService {
         return rsvpRepository.findByPasscode(passcode);
     }
 
-    public void updateRsvp(Rsvp rsvp) {
+    public void upsertRsvp(Rsvp rsvp) {
         rsvpRepository.save(rsvp);
     }
 }

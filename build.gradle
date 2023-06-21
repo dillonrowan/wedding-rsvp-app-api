@@ -32,12 +32,13 @@ dependencies {
     testRuntimeOnly 'com.h2database:h2:2.1.214'
 //    testImplementation('org.codehaus.groovy:groovy:3.0.16')
 //    testImplementation('org.spockframework:spock-core:2.3-groovy-3.0')
-//    testImplementation('org.spockframework:spock-spring:2.3-groovy-3.0')
+    testImplementation('org.spockframework:spock-spring:2.4-M1-groovy-3.0')
 
     testImplementation 'org.codehaus.groovy:groovy-all:3.0.8'
-    testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
+    testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-3.0'
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework:spring-test'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 }
 
 tasks.named('test') {

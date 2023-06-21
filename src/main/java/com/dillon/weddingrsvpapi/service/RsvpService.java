@@ -2,10 +2,12 @@ package com.dillon.weddingrsvpapi.service;
 
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
+import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RsvpService {
@@ -16,11 +18,22 @@ public class RsvpService {
         this.rsvpRepository = rsvpRepository;
     }
 
-    public List<Rsvp> findAllByPasscode(String passcode) {
-        return rsvpRepository.findByPasscode(passcode);
+    public Rsvp findByPasscode(String passcode) {
+        return rsvpRepository.findById(passcode).orElseThrow(() -> new RsvpNotFoundException(passcode));
     }
 
-    public void upsertRsvp(Rsvp rsvp) {
+    /**
+     * Updates a rsvp record in the database.
+     * If the given ID does not match the component, a {@link RsvpNotFoundException} is thrown.
+     *
+     * @param rsvp Rsvp to update.
+     */
+    @Transactional
+    public void updateRsvp(Rsvp rsvp) {
+
+        if(!rsvpRepository.existsById(rsvp.getPasscode())) {
+            throw new RsvpNotFoundException(rsvp.getPasscode());
+        }
         rsvpRepository.save(rsvp);
     }
 }

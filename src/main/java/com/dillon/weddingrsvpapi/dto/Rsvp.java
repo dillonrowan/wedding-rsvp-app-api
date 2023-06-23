@@ -1,6 +1,8 @@
 package com.dillon.weddingrsvpapi.dto;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
@@ -35,7 +37,7 @@ import java.util.Objects;
 public class Rsvp {
 
     @Id
-    @NonNull
+    @NotBlank(message = "Passcode is mandatory.")
     private String passcode;
 
     @Enumerated(EnumType.STRING)
@@ -48,10 +50,8 @@ public class Rsvp {
     @Builder.Default
     private List<FoodAllergies> foodAllergies = new ArrayList<>();
 
-    @NonNull
     private String email;
 
-    @NonNull
     private String name;
 
     private boolean attending;

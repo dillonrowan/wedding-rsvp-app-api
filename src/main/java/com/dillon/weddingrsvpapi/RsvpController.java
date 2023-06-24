@@ -1,4 +1,4 @@
-package com.dillon.weddingrsvpapi.controller;
+package com.dillon.weddingrsvpapi;
 
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
 import com.dillon.weddingrsvpapi.dto.Rsvp;

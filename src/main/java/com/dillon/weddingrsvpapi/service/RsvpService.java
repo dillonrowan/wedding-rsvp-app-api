@@ -7,15 +7,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Service responsible for managing rsvps.
+ */
 @Service
 public class RsvpService {
 
+    /**
+     * Rsvp repository bean.
+     */
     RsvpRepository rsvpRepository;
 
+    /**
+     * Constructor for the RsvpService class.
+     *
+     * @param rsvpRepository Rsvp repository service bean.
+     */
     public RsvpService(RsvpRepository rsvpRepository) {
         this.rsvpRepository = rsvpRepository;
     }
 
+    /**
+     * Finds rsvp for specified passcode.
+     *
+     * @param passcode Passcode to search rsvp for.     *
+     * @return Rsvp record belonging to passcode. Throws ResponseStatusException if rsvp is not found.
+     */
     public Rsvp findByPasscode(String passcode) {
         return rsvpRepository.findById(passcode).orElseThrow(() ->
             new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find rsvp with passcode.\n")
@@ -24,6 +41,7 @@ public class RsvpService {
 
     /**
      * Updates a rsvp record in the database.
+     *
      * @param rsvp Rsvp to update.
      */
     @Transactional

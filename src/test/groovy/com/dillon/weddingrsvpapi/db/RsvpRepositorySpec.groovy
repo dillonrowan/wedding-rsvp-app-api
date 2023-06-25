@@ -12,6 +12,7 @@ import spock.lang.Specification
 
 @ActiveProfiles("test")
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class RsvpRepositorySpec extends Specification {
 
     @Autowired

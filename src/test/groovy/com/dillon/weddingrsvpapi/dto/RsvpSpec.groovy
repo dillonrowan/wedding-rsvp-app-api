@@ -1,8 +1,5 @@
 package com.dillon.weddingrsvpapi.dto
 
-import com.dillon.weddingrsvpapi.dto.DietaryRestriction
-import com.dillon.weddingrsvpapi.dto.FoodAllergies
-import com.dillon.weddingrsvpapi.dto.Rsvp
 import jakarta.validation.Validation
 import spock.lang.Specification
 

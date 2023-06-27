@@ -5,7 +5,6 @@ import com.dillon.weddingrsvpapi.dto.DietaryRestriction
 import com.dillon.weddingrsvpapi.dto.FoodAllergies
 import com.dillon.weddingrsvpapi.dto.Rsvp
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort

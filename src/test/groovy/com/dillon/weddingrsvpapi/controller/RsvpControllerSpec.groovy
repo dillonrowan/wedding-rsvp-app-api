@@ -43,7 +43,7 @@ class RsvpControllerSpec extends Specification{
         rsvpRepository.save(rsvp)
 
         when:
-        def result = restTemplate.postForEntity("http://localhost:${port}/update-rsvp", [
+        def result = restTemplate.postForEntity("http://localhost:${port}/api/update-rsvp", [
             "passcode"  : "abcde",
             "attending" : true
         ], String)
@@ -54,7 +54,7 @@ class RsvpControllerSpec extends Specification{
 
     def 'When an rsvp that is not saved is updated, it returns HttpStatus.CONFLICT'() {
         when:
-        def result = restTemplate.postForEntity("http://localhost:${port}/update-rsvp", [
+        def result = restTemplate.postForEntity("http://localhost:${port}/api/update-rsvp", [
             "passcode" : "abcde"
         ], String)
 
@@ -74,7 +74,7 @@ class RsvpControllerSpec extends Specification{
         rsvpRepository.save(rsvp)
 
         when:
-        def result = restTemplate.postForEntity("http://localhost:${port}/update-rsvp", [
+        def result = restTemplate.postForEntity("http://localhost:${port}/api/update-rsvp", [
             "attending" : true,
         ], String)
 
@@ -95,7 +95,7 @@ class RsvpControllerSpec extends Specification{
         rsvpRepository.save(rsvp)
 
         when:
-        def result = restTemplate.postForEntity("http://localhost:${port}/rsvp", [
+        def result = restTemplate.postForEntity("http://localhost:${port}/api/rsvp", [
             "passcode"  : "abcde"
         ], String)
 

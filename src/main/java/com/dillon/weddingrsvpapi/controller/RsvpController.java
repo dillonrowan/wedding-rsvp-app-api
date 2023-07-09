@@ -15,6 +15,8 @@ import java.util.Map;
  * Rsvp REST controller.
  */
 @RestController
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3001")
 public class RsvpController {
 
     /**

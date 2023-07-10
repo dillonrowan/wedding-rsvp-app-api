@@ -15,6 +15,7 @@ import java.util.Map;
  * Rsvp REST controller.
  */
 @RestController
+@RequestMapping("/api")
 public class RsvpController {
 
     /**

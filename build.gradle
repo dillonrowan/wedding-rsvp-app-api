@@ -28,11 +28,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.liquibase:liquibase-core'
     testRuntimeOnly 'com.h2database:h2:2.1.214'
-//    testImplementation 'org.codehaus.groovy:groovy-all:3.0.8'
     testImplementation('org.codehaus.groovy:groovy:3.0.16')
     testImplementation('org.spockframework:spock-spring:2.4-M1-groovy-3.0')
     testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-3.0'

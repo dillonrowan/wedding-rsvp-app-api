@@ -42,3 +42,8 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootJar {
+    archiveFileName = "wedding-rsvp-app-api.jar"
+}
+

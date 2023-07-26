@@ -44,6 +44,6 @@ tasks.named('test') {
 }
 
 bootJar {
-    archiveFileName = "${project.name}.jar"
+    archiveFileName = "wedding-rsvp-app-api.jar"
 }
 

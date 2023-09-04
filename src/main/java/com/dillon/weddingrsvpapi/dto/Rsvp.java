@@ -1,10 +1,7 @@
 package com.dillon.weddingrsvpapi.dto;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A rsvp represents data pertaining to a single wedding guest.
@@ -23,29 +20,17 @@ public class Rsvp {
      * The unique identifier of the rsvp.
      */
     @Id
-    @NotBlank(message = "Passcode is mandatory.")
-    private String passcode;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
-    /**
-     * The dietary restrictions belonging to the rsvp.
-     */
-    @Enumerated(EnumType.STRING)
-    @OrderColumn(name = "dietary_restrictions")
-    @Builder.Default
-    private List<DietaryRestriction> dietaryRestrictions = new ArrayList<>();
+    //TODO: remove this and instead populate hashset of Rsvp in the RsvpGroup request
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private RsvpGroup rsvpGroup;
 
-    /**
-     * the food allergies belonging to the rsvp.
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "food_allergies")
-    @Builder.Default
-    private List<FoodAllergies> foodAllergies = new ArrayList<>();
-
-    /**
-     * The email belonging to the rsvp.
-     */
-    private String email;
+//    @ManyToOne
+////    @JoinColumn(name="group_id", nullable=true)
+//    private RsvpGroup rsvpGroup;
 
     /**
      * The name belonging to the rsvp
@@ -56,10 +41,4 @@ public class Rsvp {
      * Denotes if the guest is attending the wedding or not.
      */
     private boolean attending;
-
-    /**
-     * Additional guests belonging to the rsvp.
-     */
-    @Column(name = "accompanying_guests")
-    private int accompanyingGuests;
 }

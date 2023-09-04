@@ -1,6 +1,7 @@
 package com.dillon.weddingrsvpapi.controller;
 
 import com.dillon.weddingrsvpapi.dto.Rsvp;
+import com.dillon.weddingrsvpapi.dto.RsvpGroup;
 import com.dillon.weddingrsvpapi.service.RsvpService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -35,24 +36,35 @@ public class RsvpController {
     /**
      * Gets a rsvp by the provided passcode.
      *
-     * @param rsvp JSON object that represents a rsvp. Must contain passcode in order to find the corresponding rsvp
-     *             in the database.
-     * @return
+     * @param id Integer id number belonging to a record for an rsvp group.
+     * @return Rsvp group that belonged to id.
      */
-    @PostMapping("/rsvp")
-    Rsvp getRsvp(@Valid @RequestBody Rsvp rsvp) {
-        return rsvpService.findByPasscode(rsvp.getPasscode());
+    @GetMapping("/rsvps/{id}")
+    Rsvp getRsvp(@PathVariable long id) {
+        return rsvpService.findById(id);
     }
 
-    /**
-     * Updates rsvp by its passcode.
-     * @param rsvp JSON object that represents rsvp. If the passcode in this object exists in the database, that
-     *             record will be updated with the contents of this parameter.
-     */
-    @PostMapping("/update-rsvp")
-    public void updateRsvp(@Valid @RequestBody Rsvp rsvp) {
-        rsvpService.updateRsvp(rsvp);
-    }
+//    /**
+//     * Gets a rsvp by the provided passcode.
+//     *
+//     * @param rsvp JSON object that represents a rsvp. Must contain passcode in order to find the corresponding rsvp
+//     *             in the database.
+//     * @return
+//     */
+//    @PostMapping("/rsvp")
+//    Rsvp getRsvp(@Valid @RequestBody Rsvp rsvp) {
+//        return rsvpService.findByPasscode(rsvp.getPasscode());
+//    }
+//
+//    /**
+//     * Updates rsvp by its passcode.
+//     * @param rsvp JSON object that represents rsvp. If the passcode in this object exists in the database, that
+//     *             record will be updated with the contents of this parameter.
+//     */
+//    @PostMapping("/update-rsvp")
+//    public void updateRsvp(@Valid @RequestBody Rsvp rsvp) {
+//        rsvpService.updateRsvp(rsvp);
+//    }
 
     /**
      * Exception handler for object validation.

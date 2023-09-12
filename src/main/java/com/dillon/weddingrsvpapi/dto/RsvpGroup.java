@@ -3,6 +3,7 @@ package com.dillon.weddingrsvpapi.dto;
 import com.dillon.weddingrsvpapi.dto.DietaryRestriction;
 import com.dillon.weddingrsvpapi.dto.FoodAllergies;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,8 +36,13 @@ public class RsvpGroup {
     @Column(name = "group_lead")
     private String groupLead;
 
-//    @OneToMany
-//    private Set<Rsvp> rsvps = new HashSet<>();
+    /**
+     * The set of rsvp records that are associated to this rsvp group.
+     */
+    @OneToMany
+    @JsonManagedReference
+    @JoinColumn(name = "group_id")
+    private Set<Rsvp> rsvps = new HashSet<>();
 
     /**
      * The dietary restrictions belonging to the rsvp group.

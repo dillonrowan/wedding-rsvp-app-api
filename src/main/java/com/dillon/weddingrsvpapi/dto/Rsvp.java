@@ -1,5 +1,6 @@
 package com.dillon.weddingrsvpapi.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,14 +24,13 @@ public class Rsvp {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    //TODO: remove this and instead populate hashset of Rsvp in the RsvpGroup request
+    /**
+     * The rsvp group associated with this rsvp.
+     */
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "group_id")
     private RsvpGroup rsvpGroup;
-
-//    @ManyToOne
-////    @JoinColumn(name="group_id", nullable=true)
-//    private RsvpGroup rsvpGroup;
 
     /**
      * The name belonging to the rsvp

@@ -28,7 +28,7 @@ public class RsvpGroup {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private long id;
 
     /**
      * The head person of the group.
@@ -64,4 +64,10 @@ public class RsvpGroup {
      * The email belonging to the rsvp group.
      */
     private String email;
+
+    /**
+     * The denotes is members of this group have privilege to modify their group.
+     */
+    @Column(name = "modify_group")
+    private boolean modifyGroup;
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,28 +44,6 @@ public class RsvpController {
     Rsvp getRsvp(@PathVariable long id) {
         return rsvpService.findById(id);
     }
-
-//    /**
-//     * Gets a rsvp by the provided passcode.
-//     *
-//     * @param rsvp JSON object that represents a rsvp. Must contain passcode in order to find the corresponding rsvp
-//     *             in the database.
-//     * @return
-//     */
-//    @PostMapping("/rsvp")
-//    Rsvp getRsvp(@Valid @RequestBody Rsvp rsvp) {
-//        return rsvpService.findByPasscode(rsvp.getPasscode());
-//    }
-//
-//    /**
-//     * Updates rsvp by its passcode.
-//     * @param rsvp JSON object that represents rsvp. If the passcode in this object exists in the database, that
-//     *             record will be updated with the contents of this parameter.
-//     */
-//    @PostMapping("/update-rsvp")
-//    public void updateRsvp(@Valid @RequestBody Rsvp rsvp) {
-//        rsvpService.updateRsvp(rsvp);
-//    }
 
     /**
      * Exception handler for object validation.

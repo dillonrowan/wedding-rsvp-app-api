@@ -7,6 +7,8 @@ import com.dillon.weddingrsvpapi.service.RsvpService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Rsvp group REST controller.
  */
@@ -36,5 +38,16 @@ public class RsvpGroupController {
     @GetMapping("/rsvp-groups/{id}")
     RsvpGroup getRsvpGroup(@PathVariable long id) {
         return rsvpGroupService.findById(id);
+    }
+
+    /**
+     * Gets a list of rsvp groups by the provided member name.
+     *
+     * @param name The group member name used to search for rsvp groups.
+     * @return Rsvp record belonging to passcode. Throws ResponseStatusException if rsvp is not found.
+     */
+    @GetMapping("/rsvp-groups-by-name/{name}")
+    List<RsvpGroup> getRsvpGroupByName(@PathVariable String name) {
+        return rsvpGroupService.findAllBySimilarMemberName(name);
     }
 }

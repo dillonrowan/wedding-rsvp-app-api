@@ -11,13 +11,4 @@ import java.util.List;
  */
 @Repository
 public interface RsvpRepository extends JpaRepository<Rsvp, Long> {
-
-    /**
-     * Finds rsvp records for a given passcode
-     *
-     * @param passcode String to fetch a rsvp with.     *
-     * @return Rsvp record that belongs to provided passcode.
-     */
-//    @Query("select r from Rsvp r where r.passcode = ?1")
-//    List<Rsvp> findByPasscode(String passcode);
 }

@@ -40,5 +40,5 @@ public class Rsvp {
     /**
      * Denotes if the guest is attending the wedding or not.
      */
-    private boolean attending;
+    private Boolean attending;
 }

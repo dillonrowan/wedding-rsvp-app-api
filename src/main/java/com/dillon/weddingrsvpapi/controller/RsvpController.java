@@ -46,6 +46,15 @@ public class RsvpController {
     }
 
     /**
+     * Updates rsvps by their id.
+     * @param rsvps list of JSON objects that represents rsvps.
+     */
+    @PostMapping("/update-rsvps")
+    public void updateRsvp(@Valid @RequestBody List<Rsvp> rsvps) {
+        rsvpService.updateRsvpsAttending(rsvps);
+    }
+
+    /**
      * Exception handler for object validation.
      * @param ex Exception thrown when object validation fails.
      *
@@ -64,3 +73,4 @@ public class RsvpController {
         return errors;
     }
 }
+

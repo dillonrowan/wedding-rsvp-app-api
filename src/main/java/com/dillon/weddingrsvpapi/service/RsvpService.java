@@ -3,12 +3,16 @@ package com.dillon.weddingrsvpapi.service;
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.dto.RsvpGroup;
+import jakarta.transaction.Transaction;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Service responsible for managing rsvps.
@@ -40,4 +44,32 @@ public class RsvpService {
         return rsvpRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find rsvp with id.\n")
         );
-    }}
+    }
+
+    /**
+     * Updates rsvp records in the database.
+     * Updates the attending value of existing rsvps provided from rsvpsFromRequest.
+     *
+     * @param rsvpsFromRequest Rsvps to update.
+     */
+    @Transactional
+    public void updateRsvpsAttending(List<Rsvp> rsvpsFromRequest) {
+
+        // Find rsvps that exist with the list provided in the request.
+        List<Rsvp> existingRsvps = rsvpRepository.findAllById(rsvpsFromRequest.stream().map(Rsvp::getId).collect(Collectors.toList()));
+
+        // Create map where id is key and value is rsvp.
+        Map<Long, Rsvp> existingRsvpsMap = existingRsvps.stream()
+                .collect(Collectors.toMap(Rsvp::getId, Function.identity()));
+
+        // Update the rsvps that exist using what was provided from the request. Matching by id.
+        for(Rsvp r : rsvpsFromRequest) {
+            if(existingRsvpsMap.containsKey(r.getId())) {
+                Rsvp rsvp = existingRsvpsMap.get(r.getId());
+                rsvp.setAttending(r.getAttending());
+                existingRsvpsMap.put(r.getId(), rsvp); // replace what was queried with what was sent from request
+            }
+        }
+        rsvpRepository.saveAll(existingRsvpsMap.values());
+    }
+}

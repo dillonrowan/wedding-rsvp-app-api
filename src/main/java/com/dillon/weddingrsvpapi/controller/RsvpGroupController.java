@@ -50,4 +50,6 @@ public class RsvpGroupController {
     List<RsvpGroup> getRsvpGroupByName(@PathVariable String name) {
         return rsvpGroupService.findAllBySimilarMemberName(name);
     }
+
+    //TODO: create method to update rsvp groups
 }

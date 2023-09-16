@@ -3,7 +3,7 @@ package com.dillon.weddingrsvpapi.dto
 import jakarta.validation.Validation
 import spock.lang.Specification
 
-class RsvpSpec extends Specification {
+class RsvpGroupSpec extends Specification {
     def validator
 
     def setup() {
@@ -11,47 +11,50 @@ class RsvpSpec extends Specification {
         validator = factory.getValidator()
     }
 
-    def 'Getters work appropriately on the Rsvp class'() {
+    def 'Getters work appropriately on the Rsvp group class'() {
         setup:
+        def rsvp = Rsvp.builder()
+            .id(1)
+            .attending(false)
+            .name("John Smith").build()
+
         def rsvpGroup = RsvpGroup.builder()
             .id(1)
+            .rsvps(Set.of(rsvp))
             .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
             .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(true)
             .groupLead("John Smith").build()
 
-        def rsvp = Rsvp.builder()
-            .id(1)
-            .rsvpGroup(rsvpGroup)
-            .attending(false)
-            .name("John Smith").build()
-
         expect:
-        rsvp.id == 1
-        rsvp.rsvpGroup == rsvpGroup
-        !rsvp.attending
-        rsvp.name == "John Smith"
+        rsvpGroup.id == 1
+        rsvpGroup.rsvps == Set.of(rsvp)
+        rsvpGroup.modifyGroup
+        rsvpGroup.dietaryRestrictions == List.of( DietaryRestriction.NO_PORK )
+        rsvpGroup.foodAllergies == List.of( FoodAllergies.DAIRY )
+        rsvpGroup.email == "test@test.com"
+        rsvpGroup.groupLead == "John Smith"
     }
 
     def 'Good inputs causes no validation failures'() {
         setup:
+        def rsvp = Rsvp.builder()
+            .id(1)
+            .attending(false)
+            .name("John Smith").build()
+
         def rsvpGroup = RsvpGroup.builder()
             .id(1)
+            .rsvps(Set.of(rsvp))
             .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
             .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(true)
             .groupLead("John Smith").build()
 
-        def rsvp = Rsvp.builder()
-            .id(1)
-            .rsvpGroup(rsvpGroup)
-            .attending(false)
-            .name("John Smith").build()
-
         when:
-        def violations = validator.validate(rsvp)
+        def violations = validator.validate(rsvpGroup)
 
         then:
         violations.size() == 0

@@ -4,11 +4,15 @@ import com.dillon.weddingrsvpapi.db.RsvpGroupRepository;
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.dto.RsvpGroup;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Service responsible for managing rsvp groups.
@@ -55,5 +59,34 @@ public class RsvpGroupService {
                     "Could not find rsvp groups that had any members with similar name.\n");
         }
         return rsvpGroups;
+    }
+
+    /**
+     * Updates rsvp group records in the database.
+     * Updates the attending value of existing rsvp groups provided from parameter.
+     *
+     * @param rsvpGroupFromRequest Rsvps to update.
+     */
+    @Transactional
+    public void updateRsvpGroups(List<RsvpGroup> rsvpGroupFromRequest) {
+
+        // Find rsvp groups that exist with the list provided in the request.
+        List<RsvpGroup> existingRsvpGroups = rsvpGroupRepository.findAllById(rsvpGroupFromRequest.stream().map(RsvpGroup::getId).collect(Collectors.toList()));
+
+        // Create map where id is key and value is rsvp group.
+        Map<Long, RsvpGroup> existingRsvpGroupsMap = existingRsvpGroups.stream()
+                .collect(Collectors.toMap(RsvpGroup::getId, Function.identity()));
+
+        // Update the rsvp groups that exist using what was provided from the request. Matching by id.
+        for(RsvpGroup r : rsvpGroupFromRequest) {
+            if(existingRsvpGroupsMap.containsKey(r.getId())) {
+                RsvpGroup rsvpGroup = existingRsvpGroupsMap.get(r.getId());
+                rsvpGroup.setDietaryRestrictions(r.getDietaryRestrictions());
+                rsvpGroup.setFoodAllergies(r.getFoodAllergies());
+                rsvpGroup.setEmail(r.getEmail());
+                existingRsvpGroupsMap.put(r.getId(), rsvpGroup); // replace what was queried with what was sent from request
+            }
+        }
+        rsvpGroupRepository.saveAll(existingRsvpGroupsMap.values());
     }
 }

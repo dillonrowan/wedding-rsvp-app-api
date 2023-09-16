@@ -53,24 +53,5 @@ public class RsvpController {
     public void updateRsvp(@Valid @RequestBody List<Rsvp> rsvps) {
         rsvpService.updateRsvpsAttending(rsvps);
     }
-
-    /**
-     * Exception handler for object validation.
-     * @param ex Exception thrown when object validation fails.
-     *
-     * @return Map of errors that had occurred during object validation.
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
 }
 

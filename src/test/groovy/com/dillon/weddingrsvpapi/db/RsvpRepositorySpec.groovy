@@ -37,11 +37,11 @@ class RsvpRepositorySpec extends Specification {
         rsvpRepository.save(rsvp)
 
         when:
-        Rsvp retRsvp = rsvpRepository.findById(1) as Rsvp
+        Optional<Rsvp> retRsvp = rsvpRepository.findById(1)
 
         then:
-        retRsvp.get(0).id == 1
-        !retRsvp.get(0).attending
-        retRsvp.get(0).name == "John Smith"
+        retRsvp.get().id == 1
+        !retRsvp.get().attending
+        retRsvp.get().name == "John Smith"
     }
 }

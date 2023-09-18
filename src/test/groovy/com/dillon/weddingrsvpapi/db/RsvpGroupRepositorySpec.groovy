@@ -13,63 +13,54 @@ import spock.lang.Specification
 @DataJpaTest
 class RsvpGroupRepositorySpec extends Specification {
 
-//    @Autowired
-//    RsvpRepository rsvpRepository
-//
-//    def 'When an invalid id is provided, no result is returned'() {
-//        given:
-//        def rsvp = Rsvp.builder()
-//            .id(1)
-//            .attending(false)
-//            .name("John Smith").build()
-//        rsvpRepository.save(rsvp)
-//
-//        expect:
-//        rsvpRepository.findById(2).isEmpty()
-//    }
-//
-//    def 'When a valid id is provided, the correct result is returned'() {
-//        given:
-//        def rsvp = Rsvp.builder()
-//            .id(1)
-//            .attending(false)
-//            .name("John Smith").build()
-//        rsvpRepository.save(rsvp)
-//
-//        when:
-//        List<Rsvp> rsvps = rsvpRepository.findByPasscode("abcde")
-//
-//        then:
-//        rsvps.size() == 1
-//        rsvps.get(0).passcode == "abcde"
-//        rsvps.get(0).dietaryRestrictions == List.of( DietaryRestriction.NO_PORK )
-//        rsvps.get(0).foodAllergies == List.of( FoodAllergies.DAIRY )
-//        rsvps.get(0).email == "test@test.com"
-//        !rsvps.get(0).attending
-//        rsvps.get(0).name == "John Smith"
-//    }
-//
-//    def 'When a valid passcode is provided, the correct result is returned'() {
-//        given:
-//        def rsvp = Rsvp.builder()
-//            .passcode("abcde")
-//            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-//            .foodAllergies(List.of( FoodAllergies.DAIRY ))
-//            .email("test@test.com")
-//            .attending(false)
-//            .name("John Smith").build()
-//        rsvpRepository.save(rsvp)
-//
-//        when:
-//        List<Rsvp> rsvps = rsvpRepository.findByPasscode("abcde")
-//
-//        then:
-//        rsvps.size() == 1
-//        rsvps.get(0).passcode == "abcde"
-//        rsvps.get(0).dietaryRestrictions == List.of( DietaryRestriction.NO_PORK )
-//        rsvps.get(0).foodAllergies == List.of( FoodAllergies.DAIRY )
-//        rsvps.get(0).email == "test@test.com"
-//        !rsvps.get(0).attending
-//        rsvps.get(0).name == "John Smith"
-//    }
+    @Autowired
+    RsvpGroupRepository rsvpGroupRepository
+
+    @Autowired
+    RsvpRepository rsvpRepository
+
+    def 'When an invalid id is provided, no result is returned'() {
+        given:
+        def rsvp = Rsvp.builder()
+            .id(1)
+            .attending(false)
+            .name("John Smith").build()
+        rsvpRepository.save(rsvp)
+
+        def rsvpGroup = RsvpGroup.builder()
+            .id(1)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
+            .email("test@test.com")
+            .modifyGroup(false)
+            .rsvps(Set.of(rsvp))
+            .groupLead("John Smith").build()
+        rsvpGroupRepository.save(rsvpGroup)
+
+        expect:
+        rsvpGroupRepository.findById(2).isEmpty()
+    }
+
+    def 'When a valid id is provided, the correct result is returned'() {
+        given:
+        def rsvpGroup = RsvpGroup.builder()
+            .id(1)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
+            .email("test@test.com")
+            .modifyGroup(false)
+            .groupLead("John Smith").build()
+        rsvpGroupRepository.save(rsvpGroup)
+
+        when:
+        Optional<RsvpGroup> retRsvpGroup = rsvpGroupRepository.findById(1)
+
+        then:
+        retRsvpGroup.get().id == 1
+        retRsvpGroup.get().groupLead == "John Smith"
+        retRsvpGroup.get().dietaryRestrictions == List.of( DietaryRestriction.NO_PORK )
+        retRsvpGroup.get().foodAllergies == List.of( FoodAllergies.DAIRY )
+        retRsvpGroup.get().email == "test@test.com"
+        !retRsvpGroup.get().modifyGroup
+    }
 }

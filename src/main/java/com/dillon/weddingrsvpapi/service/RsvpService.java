@@ -3,6 +3,7 @@ package com.dillon.weddingrsvpapi.service;
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.dto.RsvpGroup;
+import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException;
 import jakarta.transaction.Transaction;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -71,7 +72,7 @@ public class RsvpService {
             } else {
                 // If request had any ids not in database throw exception.
                 String message = String.format("Could not find rsvp with id: %s.", r.getId());
-                throw new ResponseStatusException(HttpStatus.CONFLICT, message);
+                throw new RsvpNotFoundException(r.getId());
             }
         }
         rsvpRepository.saveAll(existingRsvpsMap.values());

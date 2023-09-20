@@ -2,6 +2,8 @@ package com.dillon.weddingrsvpapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 /**
@@ -22,7 +24,8 @@ public class Rsvp {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @NotNull(message = "Id is mandatory.")
+    private Long id;
 
     /**
      * The rsvp group associated with this rsvp.

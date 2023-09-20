@@ -68,6 +68,10 @@ public class RsvpService {
                 Rsvp rsvp = existingRsvpsMap.get(r.getId());
                 rsvp.setAttending(r.getAttending());
                 existingRsvpsMap.put(r.getId(), rsvp); // replace what was queried with what was sent from request
+            } else {
+                // If request had any ids not in database throw exception.
+                String message = String.format("Could not find rsvp with id: %s.", r.getId());
+                throw new ResponseStatusException(HttpStatus.CONFLICT, message);
             }
         }
         rsvpRepository.saveAll(existingRsvpsMap.values());

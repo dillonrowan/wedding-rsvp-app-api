@@ -3,9 +3,12 @@ package com.dillon.weddingrsvpapi.controller;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.dto.RsvpGroup;
 import com.dillon.weddingrsvpapi.service.RsvpService;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +19,9 @@ import java.util.Map;
 /**
  * Rsvp REST controller.
  */
+@Validated
 @RestController
+@Slf4j
 @RequestMapping("/api")
 public class RsvpController {
 
@@ -50,7 +55,7 @@ public class RsvpController {
      * @param rsvps list of JSON objects that represents rsvps.
      */
     @PostMapping("/update-rsvps")
-    public void updateRsvp(@Valid @RequestBody List<Rsvp> rsvps) {
+    public void updateRsvp(@RequestBody List<@Valid Rsvp> rsvps) {
         rsvpService.updateRsvpsAttending(rsvps);
     }
 }

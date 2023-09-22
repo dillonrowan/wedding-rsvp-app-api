@@ -6,12 +6,18 @@ import com.dillon.weddingrsvpapi.dto.DietaryRestriction
 import com.dillon.weddingrsvpapi.dto.FoodAllergies
 import com.dillon.weddingrsvpapi.dto.Rsvp
 import com.dillon.weddingrsvpapi.dto.RsvpGroup
+import com.dillon.weddingrsvpapi.util.ApiError
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
 
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RsvpGroupControllerSpec extends Specification {
 
     @Autowired
@@ -22,6 +28,9 @@ class RsvpGroupControllerSpec extends Specification {
 
     @Autowired
     TestRestTemplate restTemplate;
+
+    @Autowired
+    ObjectMapper objectMapper
 
     def cleanup() {
         rsvpGroupRepository.deleteAll()
@@ -66,42 +75,50 @@ class RsvpGroupControllerSpec extends Specification {
         retRsvpGroupTwo.get().dietaryRestrictions == [DietaryRestriction.NO_PORK, DietaryRestriction.NO_FISH]
     }
 
-    def 'When an rsvp that is not saved is updated, it returns HttpStatus.CONFLICT'() {
+    def 'When an rsvp that is not saved is updated, it returns HttpStatus.NOT_FOUND'() {
         setup:
-        def rsvpList = [
-            ["id": 1, "attending": true],
-            ["id": 2, "attending": true]
+        def rsvpGroupList = [
+            ["id": 1, "dietaryRestrictions": ["NO_PORK", "NO_FISH"]],
+            ["id": 2,"dietaryRestrictions": ["NO_PORK", "NO_FISH"]]
         ]
 
         when:
-        def result = restTemplate.postForEntity("http://localhost:${port}/api/update-rsvps",
-            rsvpList, String)
+        def result = restTemplate.postForEntity("http://localhost:${port}/api/update-rsvp-groups",
+            rsvpGroupList, String)
 
         then:
-        result.statusCode == HttpStatus.CONFLICT
+        result.statusCode == HttpStatus.NOT_FOUND
+        with(objectMapper.readValue(result.body, ApiError)) {
+            it.status == HttpStatus.NOT_FOUND
+            it.message == "Rsvp group with id 1 was not found"
+            it.errors.isEmpty()
+        }
     }
 
     def 'When a rsvp is updated with an invalid request, it returns HttpStatus.BAD_REQUEST'() {
         given:
-        def rsvp = Rsvp.builder()
-            .id(1)
-            .attending(false)
-            .name("John Smith").build()
-        rsvpRepository.save(rsvp)
-
-        def rsvpList = [
-            ["attending": true],
-            ["attending": true]
+        def rsvpGroupList = [
+            ["dietaryRestrictions": ["NO_PORK", "NO_FISH"]],
+            ["dietaryRestrictions": ["NO_PORK", "NO_FISH"]]
         ]
 
         when:
-        def result = restTemplate.postForEntity("http://localhost:${port}/api/update-rsvps",
-            rsvpList, String)
+        def result = restTemplate.postForEntity("http://localhost:${port}/api/update-rsvp-groups",
+            rsvpGroupList, String)
 
         then:
         result.statusCode == HttpStatus.BAD_REQUEST
-        result.getBody().contains("Id is mandatory.")
+        with(objectMapper.readValue(result.body, ApiError)) {
+            it.status == HttpStatus.BAD_REQUEST
+            it.message == "Request was invalid"
+            it.errors == [
+                "updateRsvpGroups.rsvpGroups[0].id": "Id is mandatory.",
+                "updateRsvpGroups.rsvpGroups[1].id": "Id is mandatory."
+            ]
+        }
     }
+
+    //TODO: add tests for every other controller methods, such as search by name
 
     def 'When a rsvp is queried, it returns HttpStatus.OK'() {
         given:

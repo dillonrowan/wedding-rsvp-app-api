@@ -4,6 +4,7 @@ import com.dillon.weddingrsvpapi.db.RsvpGroupRepository;
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.dto.RsvpGroup;
+import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -85,6 +86,8 @@ public class RsvpGroupService {
                 rsvpGroup.setFoodAllergies(r.getFoodAllergies());
                 rsvpGroup.setEmail(r.getEmail());
                 existingRsvpGroupsMap.put(r.getId(), rsvpGroup); // replace what was queried with what was sent from request
+            } else {
+                throw new RsvpGroupNotFoundException(r.getId());
             }
         }
         rsvpGroupRepository.saveAll(existingRsvpGroupsMap.values());

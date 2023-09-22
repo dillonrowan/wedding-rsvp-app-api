@@ -5,6 +5,7 @@ import com.dillon.weddingrsvpapi.dto.FoodAllergies;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -28,7 +29,8 @@ public class RsvpGroup {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @NotNull(message = "Id is mandatory.")
+    private Long id;
 
     /**
      * The head person of the group.

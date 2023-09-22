@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 /**
  * Rsvp group REST controller.
  */
+@Validated
 @RestController
 @RequestMapping("/api")
 public class RsvpGroupController {
@@ -62,7 +64,7 @@ public class RsvpGroupController {
      * @param rsvpGroups list of JSON objects that represents rsvp groups.
      */
     @PostMapping("/update-rsvp-groups")
-    public void updateRsvpGroups(@RequestBody List<RsvpGroup> rsvpGroups) {
+    public void updateRsvpGroups(@RequestBody List<@Valid RsvpGroup> rsvpGroups) {
         rsvpGroupService.updateRsvpGroups(rsvpGroups);
     }
 }

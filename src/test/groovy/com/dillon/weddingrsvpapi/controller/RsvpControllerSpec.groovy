@@ -70,7 +70,7 @@ class RsvpControllerSpec extends Specification {
         retRsvpTwo.get().attending == true
     }
 
-    def 'When an rsvp that is not saved is updated, it returns HttpStatus.CONFLICT'() {
+    def 'When an rsvp that is not saved is updated, it returns HttpStatus.NOT_FOUND'() {
         setup:
         def rsvpList = [
             ["id": 1, "attending": true],
@@ -82,7 +82,12 @@ class RsvpControllerSpec extends Specification {
             rsvpList, String)
 
         then:
-        result.statusCode == HttpStatus.CONFLICT
+        result.statusCode == HttpStatus.NOT_FOUND
+        with(objectMapper.readValue(result.body, ApiError)) {
+            it.status == HttpStatus.NOT_FOUND
+            it.message == "Rsvp with id 1 was not found"
+            it.errors.isEmpty()
+        }
     }
 
     def 'When a rsvp is updated with an invalid request, it returns HttpStatus.BAD_REQUEST'() {
@@ -114,21 +119,6 @@ class RsvpControllerSpec extends Specification {
         }
     }
 
-    def 'When a rsvp is queried, it returns HttpStatus.OK'() {
-        given:
-        def rsvp = Rsvp.builder()
-            .id(1)
-            .attending(false)
-            .name("John Smith").build()
-        rsvpRepository.save(rsvp)
-
-        when:
-        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp/1", String)
-
-        then:
-        result.statusCode == HttpStatus.OK
-    }
-
     def 'When a rsvp is queried that does not exist, it returns HttpStatus.NOT_FOUND'() {
         when:
         def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvps/2", String)
@@ -140,5 +130,20 @@ class RsvpControllerSpec extends Specification {
             it.message == "Rsvp with id 2 was not found"
             it.errors.isEmpty()
         }
+    }
+
+    def 'When a rsvp is queried, it returns HttpStatus.OK'() {
+        setup:
+        def rsvp = Rsvp.builder()
+            .id(1)
+            .attending(false)
+            .name("John Smith").build()
+        rsvpRepository.save(rsvp)
+
+        when:
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvps/1", String)
+
+        then:
+        result.statusCode == HttpStatus.OK
     }
 }

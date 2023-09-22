@@ -3,6 +3,7 @@ package com.dillon.weddingrsvpapi.service;
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.dto.RsvpGroup;
+import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundException;
 import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException;
 import jakarta.transaction.Transaction;
 import jakarta.transaction.Transactional;
@@ -43,7 +44,7 @@ public class RsvpService {
      */
     public Rsvp findById(long id) {
         return rsvpRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find rsvp with id.\n")
+                new RsvpNotFoundException(id)
         );
     }
 
@@ -71,7 +72,6 @@ public class RsvpService {
                 existingRsvpsMap.put(r.getId(), rsvp); // replace what was queried with what was sent from request
             } else {
                 // If request had any ids not in database throw exception.
-                String message = String.format("Could not find rsvp with id: %s.", r.getId());
                 throw new RsvpNotFoundException(r.getId());
             }
         }

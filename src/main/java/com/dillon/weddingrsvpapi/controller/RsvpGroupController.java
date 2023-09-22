@@ -57,7 +57,6 @@ public class RsvpGroupController {
         return rsvpGroupService.findAllBySimilarMemberName(name);
     }
 
-    //TODO: create method to update rsvp groups
     /**
      * Updates rsvp groups by their id.
      * @param rsvpGroups list of JSON objects that represents rsvp groups.

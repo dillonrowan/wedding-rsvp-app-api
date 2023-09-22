@@ -1,6 +1,6 @@
 package com.dillon.weddingrsvpapi.util;
 
-import com.dillon.weddingrsvpapi.exception.MisMatchedIdException;
+import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundException;
 import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -25,9 +25,12 @@ public class RestControllerExceptionHandler {
         return new ApiError(HttpStatus.BAD_REQUEST, "Request was invalid", errors);
     }
 
-    //TODO: make exception if rsvp group id not found
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(RsvpGroupNotFoundException.class)
+    public ApiError handleRsvpGroupNotFoundException(RsvpGroupNotFoundException e) {
+        return new ApiError(HttpStatus.NOT_FOUND, "Rsvp group with id " + e.getId() + " was not found");
+    }
 
-    //TODO: use this if we sent an rsvp record to update that did not exist in dp. make one for group
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(RsvpNotFoundException.class)
     public ApiError handleRsvpNotFoundException(RsvpNotFoundException e) {

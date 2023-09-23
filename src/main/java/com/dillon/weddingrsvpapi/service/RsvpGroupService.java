@@ -27,19 +27,19 @@ public class RsvpGroupService {
     RsvpGroupRepository rsvpGroupRepository;
 
     /**
-     * Constructor for the RsvpService class.
+     * Constructor for the RsvpGroupService class.
      *
-     * @param rsvpGroupRepository Rsvp repository service bean.
+     * @param rsvpGroupRepository Rsvp group repository service bean.
      */
     public RsvpGroupService(RsvpGroupRepository rsvpGroupRepository) {
         this.rsvpGroupRepository = rsvpGroupRepository;
     }
 
     /**
-     * Finds rsvp for specified passcode.
+     * Finds rsvp group for specified id.
      *
-     * @param id Id to search rsvp for.
-     * @return Rsvp record belonging to passcode. Throws ResponseStatusException if rsvp is not found.
+     * @param id Id to search rsvp group for.
+     * @return Rsvp group record belonging to the id. Throws {@link RsvpGroupNotFoundException} if rsvp is not found.
      */
     public RsvpGroup findById(long id) {
         return rsvpGroupRepository.findById(id).orElseThrow(() ->
@@ -52,7 +52,7 @@ public class RsvpGroupService {
      *
      * @param name The group member name used to find groups.
      * @return Rsvp groups that have at least 1 member with a similar name.
-     * Throws ResponseStatusException if no rsvp groups are found.
+     * Throws {@link RsvpGroupNotFoundByNameException} if no rsvp groups are found.
      */
     public List<RsvpGroup> findAllBySimilarMemberName(String name) {
         List<RsvpGroup> rsvpGroups = rsvpGroupRepository.findAllByRsvpsName(name);
@@ -66,7 +66,7 @@ public class RsvpGroupService {
      * Updates rsvp group records in the database.
      * Updates the attending value of existing rsvp groups provided from parameter.
      *
-     * @param rsvpGroupFromRequest Rsvps to update.
+     * @param rsvpGroupFromRequest Rsvps groups to update.
      */
     @Transactional
     public void updateRsvpGroups(List<RsvpGroup> rsvpGroupFromRequest) {

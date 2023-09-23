@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class RsvpService {
-
     /**
      * Rsvp repository bean.
      */
@@ -40,7 +39,7 @@ public class RsvpService {
      * Finds rsvp for specified passcode.
      *
      * @param id Passcode to search rsvp for.
-     * @return Rsvp record belonging to passcode. Throws ResponseStatusException if rsvp is not found.
+     * @return Rsvp record belonging to passcode. Throws {@link RsvpNotFoundException} if rsvp is not found.
      */
     public Rsvp findById(long id) {
         return rsvpRepository.findById(id).orElseThrow(() ->
@@ -51,6 +50,7 @@ public class RsvpService {
     /**
      * Updates rsvp records in the database.
      * Updates the attending value of existing rsvps provided from rsvpsFromRequest.
+     * Throws {@link RsvpNotFoundException} if rsvp is not found.
      *
      * @param rsvpsFromRequest Rsvps to update.
      */

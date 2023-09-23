@@ -1,20 +1,11 @@
 package com.dillon.weddingrsvpapi.controller;
 
-import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.dto.RsvpGroup;
 import com.dillon.weddingrsvpapi.service.RsvpGroupService;
-import com.dillon.weddingrsvpapi.service.RsvpService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Rsvp group REST controller.

@@ -1,20 +1,12 @@
 package com.dillon.weddingrsvpapi.controller;
 
 import com.dillon.weddingrsvpapi.dto.Rsvp;
-import com.dillon.weddingrsvpapi.dto.RsvpGroup;
 import com.dillon.weddingrsvpapi.service.RsvpService;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Rsvp REST controller.
@@ -42,7 +34,7 @@ public class RsvpController {
     /**
      * Gets a rsvp by the provided passcode.
      *
-     * @param id Integer id number belonging to a record for an rsvp group.
+     * @param id long id number belonging to a record for an rsvp group.
      * @return Rsvp group that belonged to id.
      */
     @GetMapping("/rsvps/{id}")
@@ -51,7 +43,7 @@ public class RsvpController {
     }
 
     /**
-     * Updates rsvps by their id.
+     * Updates rsvps attending status by their id.
      * @param rsvps list of JSON objects that represents rsvps.
      */
     @PostMapping("/update-rsvps")

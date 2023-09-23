@@ -18,7 +18,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Rsvp {
-
     /**
      * The unique identifier of the rsvp.
      */

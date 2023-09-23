@@ -95,7 +95,7 @@ class RsvpGroupControllerSpec extends Specification {
         result.statusCode == HttpStatus.NOT_FOUND
         with(objectMapper.readValue(result.body, ApiError)) {
             it.status == HttpStatus.NOT_FOUND
-            it.message == "Rsvp group with id 1 was not found"
+            it.message == "Rsvp group with id 1 was not found."
             it.errors.isEmpty()
         }
     }
@@ -154,7 +154,7 @@ class RsvpGroupControllerSpec extends Specification {
         result.statusCode == HttpStatus.NOT_FOUND
         with(objectMapper.readValue(result.body, ApiError)) {
             it.status == HttpStatus.NOT_FOUND
-            it.message == "Rsvp group with id 2 was not found"
+            it.message == "Rsvp group with id 2 was not found."
             it.errors.isEmpty()
         }
     }

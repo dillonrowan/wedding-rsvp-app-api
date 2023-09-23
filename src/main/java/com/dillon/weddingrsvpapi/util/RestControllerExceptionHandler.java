@@ -1,5 +1,6 @@
 package com.dillon.weddingrsvpapi.util;
 
+import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundByNameException;
 import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundException;
 import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,12 +30,26 @@ public class RestControllerExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(RsvpGroupNotFoundException.class)
     public ApiError handleRsvpGroupNotFoundException(RsvpGroupNotFoundException e) {
-        return new ApiError(HttpStatus.NOT_FOUND, "Rsvp group with id " + e.getId() + " was not found");
+        return new ApiError(HttpStatus.NOT_FOUND, "Rsvp group with id " + e.getId() + " was not found.");
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(RsvpGroupNotFoundByNameException.class)
+    public ApiError handleRsvpGroupNotFoundByNameException(RsvpGroupNotFoundByNameException e) {
+        return new ApiError(HttpStatus.NOT_FOUND, "Could not find rsvp groups that had any members with similar name.");
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(RsvpNotFoundException.class)
     public ApiError handleRsvpNotFoundException(RsvpNotFoundException e) {
-        return new ApiError(HttpStatus.NOT_FOUND, "Rsvp with id " + e.getId() + " was not found");
+        return new ApiError(HttpStatus.NOT_FOUND, "Rsvp with id " + e.getId() + " was not found.");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ApiError RequestArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put(e.getPropertyName(), e.getMessage());
+        return new ApiError(HttpStatus.BAD_REQUEST, "Invalid argument in request.", errors);
     }
 }

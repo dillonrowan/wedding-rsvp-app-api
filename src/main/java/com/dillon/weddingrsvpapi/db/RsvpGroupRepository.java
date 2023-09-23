@@ -17,7 +17,7 @@ public interface RsvpGroupRepository extends JpaRepository<RsvpGroup, Long> {
      * Finds rsvp groups that have members whose names are similar to passed in string.
      *
      * @param name String to fetch rsvp groups with.
-     * @return Rsvp record that belongs to provided passcode.
+     * @return Rsvp group record that has at least 1 member with a similar name.
      */
     @Query("select r from RsvpGroup r inner join r.rsvps members where LOWER(members.name) LIKE LOWER( CONCAT('%', :name, '%') ) ")
     List<RsvpGroup> findAllByRsvpsName(String name);

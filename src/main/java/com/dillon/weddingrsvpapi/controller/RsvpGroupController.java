@@ -40,7 +40,7 @@ public class RsvpGroupController {
     /**
      * Gets a rsvp group by the provided id.
      *
-     * @param id Integer id number belonging to a record for an rsvp group.
+     * @param id long id number belonging to a record for an rsvp group.
      * @return Rsvp group that belonged to id.
      */
     @GetMapping("/rsvp-groups/{id}")
@@ -52,7 +52,8 @@ public class RsvpGroupController {
      * Gets a list of rsvp groups by the provided member name.
      *
      * @param name The group member name used to search for rsvp groups.
-     * @return Rsvp record belonging to passcode. Throws ResponseStatusException if rsvp is not found.
+     * @return Rsvp group records whose members contain similar name.
+     * Throws RsvpGroupNotFoundException if rsvp group is not found.
      */
     @GetMapping("/rsvp-groups-by-name/{name}")
     List<RsvpGroup> getRsvpGroupByName(@PathVariable String name) {

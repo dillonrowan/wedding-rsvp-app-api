@@ -21,6 +21,9 @@ import spock.lang.Specification
 class RsvpGroupControllerSpec extends Specification {
 
     @Autowired
+    RsvpRepository rsvpRepository
+
+    @Autowired
     RsvpGroupRepository rsvpGroupRepository
 
     @LocalServerPort
@@ -33,10 +36,12 @@ class RsvpGroupControllerSpec extends Specification {
     ObjectMapper objectMapper
 
     def cleanup() {
+        rsvpRepository.deleteAll()
         rsvpGroupRepository.deleteAll()
     }
 
-    def 'When rsvp group are updated, it returns HttpStatus.OK'() {
+    // Test /update-rsvp-groups
+    def 'When rsvp groups are updated, it returns HttpStatus.OK'() {
         setup:
         def rsvpGroupOne = RsvpGroup.builder()
             .id(1)
@@ -75,7 +80,7 @@ class RsvpGroupControllerSpec extends Specification {
         retRsvpGroupTwo.get().dietaryRestrictions == [DietaryRestriction.NO_PORK, DietaryRestriction.NO_FISH]
     }
 
-    def 'When an rsvp that is not saved is updated, it returns HttpStatus.NOT_FOUND'() {
+    def 'When an rsvp group that is not saved is updated, it returns HttpStatus.NOT_FOUND'() {
         setup:
         def rsvpGroupList = [
             ["id": 1, "dietaryRestrictions": ["NO_PORK", "NO_FISH"]],
@@ -118,24 +123,59 @@ class RsvpGroupControllerSpec extends Specification {
         }
     }
 
-    //TODO: add tests for every other controller methods, such as search by name
-
-    def 'When a rsvp is queried, it returns HttpStatus.OK'() {
+    // Test /rsvp-groups
+    def 'When a rsvp group is queried by id, it returns HttpStatus.OK'() {
         given:
-        def rsvp = Rsvp.builder()
+        def rsvp = RsvpGroup.builder()
             .id(1)
-            .attending(false)
-            .name("John Smith").build()
-        rsvpRepository.save(rsvp)
+            .modifyGroup(true)
+            .groupLead("John Smith").build()
+        rsvpGroupRepository.save(rsvp)
 
         when:
-        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp/1", String)
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp-groups/1", String)
 
         then:
         result.statusCode == HttpStatus.OK
     }
 
-    def 'When a rsvp is queried that does not exist, it returns HttpStatus.NOT_FOUND'() {
+    def 'When a rsvp group is queried by id that does not exist, it returns HttpStatus.NOT_FOUND'() {
+        given:
+        def rsvpGroup = RsvpGroup.builder()
+            .id(1)
+            .modifyGroup(true)
+            .groupLead("John Smith").build()
+        rsvpGroupRepository.save(rsvpGroup)
+
+        when:
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp-groups/2", String)
+
+        then:
+        result.statusCode == HttpStatus.NOT_FOUND
+        with(objectMapper.readValue(result.body, ApiError)) {
+            it.status == HttpStatus.NOT_FOUND
+            it.message == "Rsvp group with id 2 was not found"
+            it.errors.isEmpty()
+        }
+    }
+
+    def 'When a rsvp group  is queried by id with an invalid id, it returns HttpStatus.BAD_REQUEST'() {
+        when:
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp-groups/john", String)
+
+        then:
+        result.statusCode == HttpStatus.BAD_REQUEST
+        with(objectMapper.readValue(result.body, ApiError)) {
+            it.status == HttpStatus.BAD_REQUEST
+            it.message == "Invalid argument in request."
+            it.errors == [
+                "id": "Failed to convert value of type 'java.lang.String' to required type 'long'; For input string: \"john\""
+            ]
+        }
+    }
+
+    // Test rsvp-groups-by-name
+    def 'When a rsvp group is queried by its name that exists with members, it returns HttpStatus.OK'() {
         given:
         def rsvp = Rsvp.builder()
             .id(1)
@@ -143,10 +183,68 @@ class RsvpGroupControllerSpec extends Specification {
             .name("John Smith").build()
         rsvpRepository.save(rsvp)
 
+        def rsvpGroup = RsvpGroup.builder()
+            .id(1)
+            .modifyGroup(true)
+            .rsvps(Set.of(rsvp))
+            .groupLead("John Smith").build()
+        rsvpGroupRepository.save(rsvpGroup)
+
         when:
-        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp/2", String)
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp-groups-by-name/john", String)
+
+        then:
+        result.statusCode == HttpStatus.OK
+    }
+
+    def 'When a rsvp group is queried by its name that exists no members, it returns HttpStatus.NOT_FOUND'() {
+        given:
+        def rsvpGroup = RsvpGroup.builder()
+            .id(1)
+            .modifyGroup(true)
+            .groupLead("John Smith").build()
+        rsvpGroupRepository.save(rsvpGroup)
+
+        when:
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp-groups-by-name/john", String)
 
         then:
         result.statusCode == HttpStatus.NOT_FOUND
+        with(objectMapper.readValue(result.body, ApiError)) {
+            it.status == HttpStatus.NOT_FOUND
+            it.message == "Could not find rsvp groups that had any members with similar name."
+            it.errors.isEmpty()
+        }
+    }
+
+    def 'When a rsvp group is queried by its name that exists no matching members, it returns HttpStatus.NOT_FOUND'() {
+        given:
+        def rsvpOne = Rsvp.builder()
+            .id(1)
+            .attending(false)
+            .name("John Smith").build()
+        rsvpRepository.save(rsvpOne)
+        def rsvpTwo = Rsvp.builder()
+            .id(2)
+            .attending(false)
+            .name("Jane Doe").build()
+        rsvpRepository.save(rsvpTwo)
+        def rsvpGroup = RsvpGroup.builder()
+            .id(1)
+            .rsvps(Set.of(rsvpOne, rsvpTwo))
+            .modifyGroup(true)
+            .groupLead("John Smith").build()
+        rsvpGroupRepository.save(rsvpGroup)
+
+        when:
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp-groups-by-name/bob", String)
+
+        then:
+        result.statusCode == HttpStatus.NOT_FOUND
+        with(objectMapper.readValue(result.body, ApiError)) {
+            it.status == HttpStatus.NOT_FOUND
+            it.message == "Could not find rsvp groups that had any members with similar name."
+            it.errors.isEmpty()
+        }
     }
 }

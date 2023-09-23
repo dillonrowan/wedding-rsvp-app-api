@@ -4,6 +4,7 @@ import com.dillon.weddingrsvpapi.db.RsvpGroupRepository;
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.dto.RsvpGroup;
+import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundByNameException;
 import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,7 @@ public class RsvpGroupService {
      */
     public RsvpGroup findById(long id) {
         return rsvpGroupRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find rsvp group with id.\n")
+                new RsvpGroupNotFoundException(id)
         );
     }
 
@@ -56,8 +57,9 @@ public class RsvpGroupService {
     public List<RsvpGroup> findAllBySimilarMemberName(String name) {
         List<RsvpGroup> rsvpGroups = rsvpGroupRepository.findAllByRsvpsName(name);
         if(rsvpGroups.size() == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Could not find rsvp groups that had any members with similar name.\n");
+            throw new RsvpGroupNotFoundByNameException(name);
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+//                    "Could not find rsvp groups that had any members with similar name.\n");
         }
         return rsvpGroups;
     }

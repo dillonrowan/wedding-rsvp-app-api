@@ -19,13 +19,18 @@ class RsvpGroupRepositorySpec extends Specification {
     @Autowired
     RsvpRepository rsvpRepository
 
-    def 'When an invalid id is provided, no result is returned'() {
+    def 'When a valid name is provided, the group and its members with that member name is returned'() {
         given:
         def rsvp = Rsvp.builder()
             .id(1)
             .attending(false)
             .name("John Smith").build()
         rsvpRepository.save(rsvp)
+        def rsvpTwo = Rsvp.builder()
+            .id(2)
+            .attending(false)
+            .name("Jane Doe").build()
+        rsvpRepository.save(rsvpTwo)
 
         def rsvpGroup = RsvpGroup.builder()
             .id(1)
@@ -33,34 +38,27 @@ class RsvpGroupRepositorySpec extends Specification {
             .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(false)
-            .rsvps(Set.of(rsvp))
-            .groupLead("John Smith").build()
-        rsvpGroupRepository.save(rsvpGroup)
-
-        expect:
-        rsvpGroupRepository.findById(2).isEmpty()
-    }
-
-    def 'When a valid id is provided, the correct result is returned'() {
-        given:
-        def rsvpGroup = RsvpGroup.builder()
-            .id(1)
-            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-            .foodAllergies(List.of( FoodAllergies.DAIRY ))
-            .email("test@test.com")
-            .modifyGroup(false)
+            .rsvps(Set.of(rsvp, rsvpTwo))
             .groupLead("John Smith").build()
         rsvpGroupRepository.save(rsvpGroup)
 
         when:
-        Optional<RsvpGroup> retRsvpGroup = rsvpGroupRepository.findById(1)
+        List<RsvpGroup> rsvpGroupRet = rsvpGroupRepository.findAllByRsvpsName("jOhN")
 
         then:
-        retRsvpGroup.get().id == 1
-        retRsvpGroup.get().groupLead == "John Smith"
-        retRsvpGroup.get().dietaryRestrictions == List.of( DietaryRestriction.NO_PORK )
-        retRsvpGroup.get().foodAllergies == List.of( FoodAllergies.DAIRY )
-        retRsvpGroup.get().email == "test@test.com"
-        !retRsvpGroup.get().modifyGroup
+        rsvpGroupRet.size() == 1
+        rsvpGroupRet[0].dietaryRestrictions == [DietaryRestriction.NO_PORK]
+        rsvpGroupRet[0].foodAllergies == [FoodAllergies.DAIRY]
+        rsvpGroupRet[0].email == "test@test.com"
+        !rsvpGroupRet[0].modifyGroup
+        rsvpGroupRet[0].groupLead == "John Smith"
+        rsvpGroupRet[0].rsvps.size() == 2
+
+        !rsvpGroupRet[0].rsvps[0].attending
+        rsvpGroupRet[0].rsvps[0].name == "John Smith"
+        rsvpGroupRet[0].rsvps[0].id == 1
+        !rsvpGroupRet[0].rsvps[1].attending
+        rsvpGroupRet[0].rsvps[1].name == "Jane Doe"
+        rsvpGroupRet[0].rsvps[1].id == 2
     }
 }

@@ -37,6 +37,7 @@ class RsvpControllerSpec extends Specification {
         rsvpRepository.deleteAll()
     }
 
+    // Test /update-rsvps
     def 'When a rsvps are updated, it returns HttpStatus.OK'() {
         setup:
         def rsvpOne = Rsvp.builder()
@@ -119,19 +120,7 @@ class RsvpControllerSpec extends Specification {
         }
     }
 
-    def 'When a rsvp is queried that does not exist, it returns HttpStatus.NOT_FOUND'() {
-        when:
-        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvps/2", String)
-
-        then:
-        result.statusCode == HttpStatus.NOT_FOUND
-        with(objectMapper.readValue(result.body, ApiError)) {
-            it.status == HttpStatus.NOT_FOUND
-            it.message == "Rsvp with id 2 was not found"
-            it.errors.isEmpty()
-        }
-    }
-
+    // Test /rsvps
     def 'When a rsvp is queried, it returns HttpStatus.OK'() {
         setup:
         def rsvp = Rsvp.builder()
@@ -145,5 +134,33 @@ class RsvpControllerSpec extends Specification {
 
         then:
         result.statusCode == HttpStatus.OK
+    }
+
+    def 'When a rsvp is queried that does not exist, it returns HttpStatus.NOT_FOUND'() {
+        when:
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvps/2", String)
+
+        then:
+        result.statusCode == HttpStatus.NOT_FOUND
+        with(objectMapper.readValue(result.body, ApiError)) {
+            it.status == HttpStatus.NOT_FOUND
+            it.message == "Rsvp with id 2 was not found"
+            it.errors.isEmpty()
+        }
+    }
+
+    def 'When a rsvp is queried by id with an invalid id, it returns HttpStatus.BAD_REQUEST'() {
+        when:
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvps/john", String)
+
+        then:
+        result.statusCode == HttpStatus.BAD_REQUEST
+        with(objectMapper.readValue(result.body, ApiError)) {
+            it.status == HttpStatus.BAD_REQUEST
+            it.message == "Invalid argument in request."
+            it.errors == [
+                "id": "Failed to convert value of type 'java.lang.String' to required type 'long'; For input string: \"john\""
+            ]
+        }
     }
 }

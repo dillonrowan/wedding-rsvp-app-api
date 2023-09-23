@@ -159,7 +159,7 @@ class RsvpGroupControllerSpec extends Specification {
         }
     }
 
-    def 'When a rsvp group  is queried by id with an invalid id, it returns HttpStatus.BAD_REQUEST'() {
+    def 'When a rsvp group is queried by id with an invalid id, it returns HttpStatus.BAD_REQUEST'() {
         when:
         def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp-groups/john", String)
 

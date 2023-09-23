@@ -58,8 +58,6 @@ public class RsvpGroupService {
         List<RsvpGroup> rsvpGroups = rsvpGroupRepository.findAllByRsvpsName(name);
         if(rsvpGroups.size() == 0) {
             throw new RsvpGroupNotFoundByNameException(name);
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-//                    "Could not find rsvp groups that had any members with similar name.\n");
         }
         return rsvpGroups;
     }

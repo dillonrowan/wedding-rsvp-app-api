@@ -3,7 +3,6 @@ package com.dillon.weddingrsvpapi.service
 import com.dillon.weddingrsvpapi.db.RsvpRepository
 import com.dillon.weddingrsvpapi.dto.Rsvp
 import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException
-import org.springframework.web.server.ResponseStatusException
 import spock.lang.Specification
 
 
@@ -32,7 +31,7 @@ class RsvpServiceSpec extends Specification {
         notThrown(Exception)
     }
 
-    def 'When a valid rsvp exists and findById is called with the incorrect id, updateRsvp throws RsvpNotFoundException'() {
+    def 'When a valid rsvp exists and findById is called with the incorrect id, findById throws RsvpNotFoundException'() {
         setup:
         rsvpRepository.findById(1) >> Optional.of(new Rsvp(id:  1))
 

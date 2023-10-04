@@ -44,26 +44,24 @@ class RsvpGroupControllerSpec extends Specification {
     def 'When rsvp groups are updated, it returns HttpStatus.OK'() {
         setup:
         def rsvpGroupOne = RsvpGroup.builder()
-            .id(1)
             .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
             .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(false)
             .groupLead("John Smith").build()
-        rsvpGroupRepository.save(rsvpGroupOne)
+        def rsvpGroupOneSaved = rsvpGroupRepository.save(rsvpGroupOne)
 
         def rsvpGroupTwo = RsvpGroup.builder()
-            .id(2)
             .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
             .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(false)
             .groupLead("Jane Doe").build()
-        rsvpGroupRepository.save(rsvpGroupTwo)
+        def rsvpGroupTwoSaved = rsvpGroupRepository.save(rsvpGroupTwo)
 
         def rsvpGroupList = [
-            ["id": 1, "dietaryRestrictions": ["NO_PORK", "NO_FISH"]],
-            ["id": 2,"dietaryRestrictions": ["NO_PORK", "NO_FISH"]]
+            ["id": rsvpGroupOneSaved.id, "dietaryRestrictions": ["NO_PORK", "NO_FISH"]],
+            ["id": rsvpGroupTwoSaved.id,"dietaryRestrictions": ["NO_PORK", "NO_FISH"]]
         ]
 
         when:
@@ -71,8 +69,8 @@ class RsvpGroupControllerSpec extends Specification {
             rsvpGroupList, String)
 
         and:
-        Optional<RsvpGroup> retRsvpGroupOne = rsvpGroupRepository.findById(1)
-        Optional<RsvpGroup> retRsvpGroupTwo = rsvpGroupRepository.findById(2)
+        Optional<RsvpGroup> retRsvpGroupOne = rsvpGroupRepository.findById(rsvpGroupOneSaved.id)
+        Optional<RsvpGroup> retRsvpGroupTwo = rsvpGroupRepository.findById(rsvpGroupTwoSaved.id)
 
         then:
         result.statusCode == HttpStatus.OK
@@ -126,14 +124,13 @@ class RsvpGroupControllerSpec extends Specification {
     // Test /rsvp-groups
     def 'When a rsvp group is queried by id, it returns HttpStatus.OK'() {
         given:
-        def rsvp = RsvpGroup.builder()
-            .id(1)
+        def rsvpGroup = RsvpGroup.builder()
             .modifyGroup(true)
             .groupLead("John Smith").build()
-        rsvpGroupRepository.save(rsvp)
+        def rsvpGroupRepositorySaved = rsvpGroupRepository.save(rsvpGroup)
 
         when:
-        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp-groups/1", String)
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvp-groups/${rsvpGroupRepositorySaved.id}", String)
 
         then:
         result.statusCode == HttpStatus.OK
@@ -178,13 +175,11 @@ class RsvpGroupControllerSpec extends Specification {
     def 'When a rsvp group is queried by its name that exists with members, it returns HttpStatus.OK'() {
         given:
         def rsvp = Rsvp.builder()
-            .id(1)
             .attending(false)
             .name("John Smith").build()
         rsvpRepository.save(rsvp)
 
         def rsvpGroup = RsvpGroup.builder()
-            .id(1)
             .modifyGroup(true)
             .rsvps(Set.of(rsvp))
             .groupLead("John Smith").build()
@@ -200,7 +195,6 @@ class RsvpGroupControllerSpec extends Specification {
     def 'When a rsvp group is queried by its name that exists no members, it returns HttpStatus.NOT_FOUND'() {
         given:
         def rsvpGroup = RsvpGroup.builder()
-            .id(1)
             .modifyGroup(true)
             .groupLead("John Smith").build()
         rsvpGroupRepository.save(rsvpGroup)
@@ -220,17 +214,16 @@ class RsvpGroupControllerSpec extends Specification {
     def 'When a rsvp group is queried by its name that exists no matching members, it returns HttpStatus.NOT_FOUND'() {
         given:
         def rsvpOne = Rsvp.builder()
-            .id(1)
             .attending(false)
             .name("John Smith").build()
         rsvpRepository.save(rsvpOne)
+
         def rsvpTwo = Rsvp.builder()
-            .id(2)
             .attending(false)
             .name("Jane Doe").build()
         rsvpRepository.save(rsvpTwo)
+
         def rsvpGroup = RsvpGroup.builder()
-            .id(1)
             .rsvps(Set.of(rsvpOne, rsvpTwo))
             .modifyGroup(true)
             .groupLead("John Smith").build()

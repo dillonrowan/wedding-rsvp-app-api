@@ -2,18 +2,14 @@ package com.dillon.weddingrsvpapi.controller
 
 import com.dillon.weddingrsvpapi.db.RsvpRepository
 import com.dillon.weddingrsvpapi.util.ApiError
-import com.dillon.weddingrsvpapi.dto.FoodAllergies
 import com.dillon.weddingrsvpapi.dto.Rsvp
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.http.HttpStatus
-
 
 import spock.lang.Specification
 
@@ -44,13 +40,13 @@ class RsvpControllerSpec extends Specification {
             .id(1)
             .attending(false)
             .name("John Smith").build()
-        rsvpRepository.save(rsvpOne)
+        def rsvpOneSaved = rsvpRepository.save(rsvpOne)
 
         def rsvpTwo = Rsvp.builder()
             .id(2)
             .attending(false)
             .name("Jane Doe").build()
-        rsvpRepository.save(rsvpTwo)
+        def rsvpTwoSaved = rsvpRepository.save(rsvpTwo)
 
         def rsvpList = [
             ["id": 1, "attending": true],
@@ -62,8 +58,8 @@ class RsvpControllerSpec extends Specification {
             rsvpList, String)
 
         and:
-        Optional<Rsvp> retRsvpOne = rsvpRepository.findById(1)
-        Optional<Rsvp> retRsvpTwo = rsvpRepository.findById(2)
+        Optional<Rsvp> retRsvpOne = rsvpRepository.findById(rsvpOneSaved.id)
+        Optional<Rsvp> retRsvpTwo = rsvpRepository.findById(rsvpTwoSaved.id)
 
         then:
         result.statusCode == HttpStatus.OK
@@ -124,13 +120,12 @@ class RsvpControllerSpec extends Specification {
     def 'When a rsvp is queried, it returns HttpStatus.OK'() {
         setup:
         def rsvp = Rsvp.builder()
-            .id(1)
             .attending(false)
             .name("John Smith").build()
-        rsvpRepository.save(rsvp)
+        def savedRsvp = rsvpRepository.save(rsvp)
 
         when:
-        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvps/1", String)
+        def result = restTemplate.getForEntity("http://localhost:${port}/api/rsvps/${savedRsvp.id}", String)
 
         then:
         result.statusCode == HttpStatus.OK

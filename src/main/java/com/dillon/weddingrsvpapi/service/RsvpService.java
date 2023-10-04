@@ -58,7 +58,8 @@ public class RsvpService {
     public void updateRsvpsAttending(List<Rsvp> rsvpsFromRequest) {
 
         // Find rsvps that exist with the list provided in the request.
-        List<Rsvp> existingRsvps = rsvpRepository.findAllById(rsvpsFromRequest.stream().map(Rsvp::getId).collect(Collectors.toList()));
+        List<Long> idsFromRequest = rsvpsFromRequest.stream().map(Rsvp::getId).toList();
+        List<Rsvp> existingRsvps = rsvpRepository.findAllById(idsFromRequest);
 
         // Create map where id is key and value is rsvp.
         Map<Long, Rsvp> existingRsvpsMap = existingRsvps.stream()

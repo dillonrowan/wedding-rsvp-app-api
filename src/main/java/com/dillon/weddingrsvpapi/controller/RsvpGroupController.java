@@ -31,7 +31,7 @@ public class RsvpGroupController {
     /**
      * Gets a rsvp group by the provided id.
      *
-     * @param id long id number belonging to a record for an rsvp group.
+     * @param id Long id number belonging to a record for an rsvp group.
      * @return Rsvp group that belonged to id.
      */
     @GetMapping("/rsvp-groups/{id}")
@@ -53,7 +53,7 @@ public class RsvpGroupController {
 
     /**
      * Updates rsvp groups by their id.
-     * @param rsvpGroups list of JSON objects that represents rsvp groups.
+     * @param rsvpGroups List of JSON objects that represents rsvp groups.
      */
     @PostMapping("/update-rsvp-groups")
     public void updateRsvpGroups(@RequestBody List<@Valid RsvpGroup> rsvpGroups) {

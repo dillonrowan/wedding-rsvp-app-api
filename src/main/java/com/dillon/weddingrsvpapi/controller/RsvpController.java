@@ -3,7 +3,6 @@ package com.dillon.weddingrsvpapi.controller;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.service.RsvpService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.List;
  */
 @Validated
 @RestController
-@Slf4j
 @RequestMapping("/api")
 public class RsvpController {
 
@@ -34,7 +32,7 @@ public class RsvpController {
     /**
      * Gets a rsvp by the provided passcode.
      *
-     * @param id long id number belonging to a record for an rsvp group.
+     * @param id Long id number belonging to a record for an rsvp group.
      * @return Rsvp group that belonged to id.
      */
     @GetMapping("/rsvps/{id}")
@@ -44,7 +42,7 @@ public class RsvpController {
 
     /**
      * Updates rsvps attending status by their id.
-     * @param rsvps list of JSON objects that represents rsvps.
+     * @param rsvps List of JSON objects that represents rsvps.
      */
     @PostMapping("/update-rsvps")
     public void updateRsvp(@RequestBody List<@Valid Rsvp> rsvps) {

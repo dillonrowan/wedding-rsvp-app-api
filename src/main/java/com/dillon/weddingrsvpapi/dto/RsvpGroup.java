@@ -1,13 +1,9 @@
 package com.dillon.weddingrsvpapi.dto;
 
-import com.dillon.weddingrsvpapi.dto.DietaryRestriction;
-import com.dillon.weddingrsvpapi.dto.FoodAllergies;
-import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

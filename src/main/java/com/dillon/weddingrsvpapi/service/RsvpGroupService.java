@@ -1,15 +1,11 @@
 package com.dillon.weddingrsvpapi.service;
 
 import com.dillon.weddingrsvpapi.db.RsvpGroupRepository;
-import com.dillon.weddingrsvpapi.db.RsvpRepository;
-import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.dto.RsvpGroup;
 import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundByNameException;
 import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;

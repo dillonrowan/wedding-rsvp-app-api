@@ -2,17 +2,20 @@ package com.dillon.weddingrsvpapi.service;
 
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
+import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Service responsible for managing rsvps.
  */
 @Service
 public class RsvpService {
-
     /**
      * Rsvp repository bean.
      */
@@ -30,26 +33,44 @@ public class RsvpService {
     /**
      * Finds rsvp for specified passcode.
      *
-     * @param passcode Passcode to search rsvp for.     *
-     * @return Rsvp record belonging to passcode. Throws ResponseStatusException if rsvp is not found.
+     * @param id Passcode to search rsvp for.
+     * @return Rsvp record belonging to passcode. Throws {@link RsvpNotFoundException} if rsvp is not found.
      */
-    public Rsvp findByPasscode(String passcode) {
-        return rsvpRepository.findById(passcode).orElseThrow(() ->
-            new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find rsvp with passcode.\n")
+    public Rsvp findById(long id) {
+        return rsvpRepository.findById(id).orElseThrow(() ->
+                new RsvpNotFoundException(id)
         );
     }
 
     /**
-     * Updates a rsvp record in the database.
+     * Updates rsvp records in the database.
+     * Updates the attending value of existing rsvps provided from rsvpsFromRequest.
+     * Throws {@link RsvpNotFoundException} if rsvp is not found.
      *
-     * @param rsvp Rsvp to update.
+     * @param rsvpsFromRequest Rsvps to update.
      */
     @Transactional
-    public void updateRsvp(Rsvp rsvp) {
+    public void updateRsvpsAttending(List<Rsvp> rsvpsFromRequest) {
 
-        if(!rsvpRepository.existsById(rsvp.getPasscode())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Could not update rsvp with passcode.\n");
+        // Find rsvps that exist with the list provided in the request.
+        List<Long> idsFromRequest = rsvpsFromRequest.stream().map(Rsvp::getId).toList();
+        List<Rsvp> existingRsvps = rsvpRepository.findAllById(idsFromRequest);
+
+        // Create map where id is key and value is rsvp.
+        Map<Long, Rsvp> existingRsvpsMap = existingRsvps.stream()
+                .collect(Collectors.toMap(Rsvp::getId, Function.identity()));
+
+        // Update the rsvps that exist using what was provided from the request. Matching by id.
+        for(Rsvp r : rsvpsFromRequest) {
+            if(existingRsvpsMap.containsKey(r.getId())) {
+                Rsvp rsvp = existingRsvpsMap.get(r.getId());
+                rsvp.setAttending(r.getAttending());
+                existingRsvpsMap.put(r.getId(), rsvp); // replace what was queried with what was sent from request
+            } else {
+                // If request had any ids not in database throw exception.
+                throw new RsvpNotFoundException(r.getId());
+            }
         }
-        rsvpRepository.save(rsvp);
+        rsvpRepository.saveAll(existingRsvpsMap.values());
     }
 }

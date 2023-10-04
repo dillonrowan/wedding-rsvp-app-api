@@ -3,17 +3,14 @@ package com.dillon.weddingrsvpapi.controller;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.service.RsvpService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Rsvp REST controller.
  */
+@Validated
 @RestController
 @RequestMapping("/api")
 public class RsvpController {
@@ -35,41 +32,21 @@ public class RsvpController {
     /**
      * Gets a rsvp by the provided passcode.
      *
-     * @param rsvp JSON object that represents a rsvp. Must contain passcode in order to find the corresponding rsvp
-     *             in the database.
-     * @return
+     * @param id Long id number belonging to a record for an rsvp group.
+     * @return Rsvp group that belonged to id.
      */
-    @PostMapping("/rsvp")
-    Rsvp getRsvp(@Valid @RequestBody Rsvp rsvp) {
-        return rsvpService.findByPasscode(rsvp.getPasscode());
+    @GetMapping("/rsvps/{id}")
+    Rsvp getRsvp(@PathVariable long id) {
+        return rsvpService.findById(id);
     }
 
     /**
-     * Updates rsvp by its passcode.
-     * @param rsvp JSON object that represents rsvp. If the passcode in this object exists in the database, that
-     *             record will be updated with the contents of this parameter.
+     * Updates rsvps attending status by their id.
+     * @param rsvps List of JSON objects that represents rsvps.
      */
-    @PostMapping("/update-rsvp")
-    public void updateRsvp(@Valid @RequestBody Rsvp rsvp) {
-        rsvpService.updateRsvp(rsvp);
-    }
-
-    /**
-     * Exception handler for object validation.
-     * @param ex Exception thrown when object validation fails.
-     *
-     * @return Map of errors that had occurred during object validation.
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
+    @PostMapping("/update-rsvps")
+    public void updateRsvp(@RequestBody List<@Valid Rsvp> rsvps) {
+        rsvpService.updateRsvpsAttending(rsvps);
     }
 }
+

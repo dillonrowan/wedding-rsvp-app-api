@@ -2,7 +2,7 @@ package com.dillon.weddingrsvpapi.service
 
 import com.dillon.weddingrsvpapi.db.RsvpRepository
 import com.dillon.weddingrsvpapi.dto.Rsvp
-import org.springframework.web.server.ResponseStatusException
+import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException
 import spock.lang.Specification
 
 
@@ -16,53 +16,58 @@ class RsvpServiceSpec extends Specification {
         rsvpService = new RsvpService(rsvpRepository)
     }
 
-    def 'When a valid rsvp exists and is updated, updateRsvp does not throw an exception'() {
+    // Test findById()
+    def 'When a valid rsvp exists and findById is called, exception is not thrown'() {
         setup:
         Rsvp rsvp = Mock()
-        rsvp.getPasscode() >> "abcde"
+        rsvp.getId() >> 1
 
-        rsvpRepository.existsById("abcde") >> true
+        rsvpRepository.existsById(1) >> true
 
         when:
-        rsvpService.updateRsvp(rsvp)
+        rsvpService.findById(1) >> true
 
         then:
         notThrown(Exception)
     }
 
-    def 'When a valid rsvp does not exists and is updated, updateRsvp throws an exception'() {
+    def 'When a valid rsvp exists and findById is called with the incorrect id, findById throws RsvpNotFoundException'() {
         setup:
-        Rsvp rsvp = Mock()
-        rsvp.getPasscode() >> "abcde"
-
-        rsvpRepository.existsById("abcde") >> false
+        rsvpRepository.findById(1) >> Optional.of(new Rsvp(id:  1))
 
         when:
-        rsvpService.updateRsvp(rsvp)
+        rsvpService.findById(1)
 
         then:
-        thrown ResponseStatusException
+        notThrown(RsvpNotFoundException)
     }
 
-    def 'When an rsvp that does exist is queried, findByPasscode does not throw and Exception'() {
+    // Test updateRsvpsAttending()
+    def 'When a valid rsvp does not exists and is updated, updateRsvpsAttending throws RsvpNotFoundException'() {
         setup:
-        rsvpRepository.findById("aaaaa") >> Optional.of(new Rsvp(passcode:  "aaaaa"))
+        Rsvp rsvpOne = Mock()
+        rsvpOne.getId() >> 1
+
+        rsvpRepository.findAllById([1]) >> []
 
         when:
-        rsvpService.findByPasscode("aaaaa")
+        rsvpService.updateRsvpsAttending([rsvpOne])
 
         then:
-        notThrown(Exception)
+        thrown RsvpNotFoundException
     }
 
-    def 'When an rsvp that does not exist is queried, findByPasscode throws ResponseStatusException'() {
+    def 'When a valid rsvp does exist and is updated, exception is not thrown'() {
         setup:
-        rsvpRepository.findById("bbbbb") >> Optional.empty()
+        Rsvp rsvpOne = Mock()
+        rsvpOne.getId() >> 1
+
+        rsvpRepository.findAllById([1]) >> [new Rsvp(id:  1)]
 
         when:
-        rsvpService.findByPasscode("bbbbb")
+        rsvpService.updateRsvpsAttending([rsvpOne])
 
         then:
-        thrown ResponseStatusException
+        notThrown RsvpNotFoundException
     }
 }

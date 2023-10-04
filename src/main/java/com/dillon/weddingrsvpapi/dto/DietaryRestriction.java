@@ -8,7 +8,7 @@ public enum DietaryRestriction {
     /**
      * Dietary restriction for not being able to consume red meat.
      */
-    NO_READ_MEAT,
+    NO_RED_MEAT,
 
     /**
      * Dietary restriction for not being able to consume chicken.

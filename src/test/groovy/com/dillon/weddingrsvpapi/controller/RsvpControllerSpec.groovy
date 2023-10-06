@@ -1,6 +1,8 @@
 package com.dillon.weddingrsvpapi.controller
 
+import com.dillon.weddingrsvpapi.db.RsvpGroupRepository
 import com.dillon.weddingrsvpapi.db.RsvpRepository
+import com.dillon.weddingrsvpapi.dto.RsvpGroup
 import com.dillon.weddingrsvpapi.util.ApiError
 import com.dillon.weddingrsvpapi.dto.Rsvp
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -8,10 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.core.io.ClassPathResource
+import org.springframework.http.client.ClientHttpRequestInterceptor
+import org.springframework.jdbc.datasource.init.ScriptUtils
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.http.HttpStatus
 
 import spock.lang.Specification
+
+import java.sql.Connection
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -19,6 +26,9 @@ class RsvpControllerSpec extends Specification {
 
     @Autowired
     RsvpRepository rsvpRepository
+
+    @Autowired
+    RsvpGroupRepository rsvpGroupRepository
 
     @LocalServerPort
     private int port
@@ -29,6 +39,15 @@ class RsvpControllerSpec extends Specification {
     @Autowired
     ObjectMapper objectMapper
 
+    def setup() {
+        restTemplate.getRestTemplate().setInterceptors(
+            Collections.singletonList((request, body, execution) -> {
+                request.getHeaders().add("x-api-key", "secret");
+                return execution.execute(request, body);
+            } as ClientHttpRequestInterceptor)
+        )
+    }
+
     def cleanup() {
         rsvpRepository.deleteAll()
     }
@@ -37,13 +56,11 @@ class RsvpControllerSpec extends Specification {
     def 'When a rsvps are updated, it returns HttpStatus.OK'() {
         setup:
         def rsvpOne = Rsvp.builder()
-            .id(1)
             .attending(false)
             .name("John Smith").build()
         def rsvpOneSaved = rsvpRepository.save(rsvpOne)
 
         def rsvpTwo = Rsvp.builder()
-            .id(2)
             .attending(false)
             .name("Jane Doe").build()
         def rsvpTwoSaved = rsvpRepository.save(rsvpTwo)

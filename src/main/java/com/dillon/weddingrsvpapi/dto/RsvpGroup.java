@@ -40,6 +40,7 @@ public class RsvpGroup {
     @OneToMany
     @JsonManagedReference
     @JoinColumn(name = "group_id")
+    @Builder.Default
     private Set<Rsvp> rsvps = new HashSet<>();
 
     /**

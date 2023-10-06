@@ -5,12 +5,14 @@ import com.dillon.weddingrsvpapi.dto.FoodAllergies
 import com.dillon.weddingrsvpapi.dto.Rsvp
 import com.dillon.weddingrsvpapi.dto.RsvpGroup
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
 
 @ActiveProfiles("test")
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class RsvpGroupRepositorySpec extends Specification {
 
     @Autowired

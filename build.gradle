@@ -20,7 +20,6 @@ repositories {
 }
 
 dependencies {
-
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security:3.1.2'
@@ -32,7 +31,6 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.liquibase:liquibase-core'
-//    testRuntimeOnly 'com.h2database:h2:2.2.220'
     testImplementation('org.codehaus.groovy:groovy:3.0.16')
     testImplementation('org.spockframework:spock-spring:2.4-M1-groovy-3.0')
     testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-3.0'

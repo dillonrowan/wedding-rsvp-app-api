@@ -38,5 +38,5 @@ public enum DietaryRestriction {
     /**
      * Dietary restriction for not being able to consume dairy products.
      */
-    DAIRY
+    NO_DAIRY
 }

@@ -50,7 +50,7 @@ public class RsvpService {
      * @param rsvpsFromRequest Rsvps to update.
      */
     @Transactional
-    public void updateRsvpsAttending(List<Rsvp> rsvpsFromRequest) {
+    public void updateRsvpAttendingAndFoodRestrictions(List<Rsvp> rsvpsFromRequest) {
 
         // Find rsvps that exist with the list provided in the request.
         List<Long> idsFromRequest = rsvpsFromRequest.stream().map(Rsvp::getId).toList();

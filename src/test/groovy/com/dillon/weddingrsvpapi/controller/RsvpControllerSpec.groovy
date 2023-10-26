@@ -4,7 +4,6 @@ import com.dillon.weddingrsvpapi.db.RsvpGroupRepository
 import com.dillon.weddingrsvpapi.db.RsvpRepository
 import com.dillon.weddingrsvpapi.dto.DietaryRestriction
 import com.dillon.weddingrsvpapi.dto.FoodAllergies
-import com.dillon.weddingrsvpapi.dto.RsvpGroup
 import com.dillon.weddingrsvpapi.util.ApiError
 import com.dillon.weddingrsvpapi.dto.Rsvp
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -12,15 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
-import org.springframework.core.io.ClassPathResource
 import org.springframework.http.client.ClientHttpRequestInterceptor
-import org.springframework.jdbc.datasource.init.ScriptUtils
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.http.HttpStatus
 
 import spock.lang.Specification
 
-import java.sql.Connection
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

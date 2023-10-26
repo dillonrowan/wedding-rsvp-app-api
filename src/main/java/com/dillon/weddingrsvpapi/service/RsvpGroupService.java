@@ -65,7 +65,7 @@ public class RsvpGroupService {
      * @param rsvpGroupFromRequest Rsvps groups to update.
      */
     @Transactional
-    public void updateRsvpGroups(List<RsvpGroup> rsvpGroupFromRequest) {
+    public void updateRsvpGroupEmails(List<RsvpGroup> rsvpGroupFromRequest) {
 
         // Find rsvp groups that exist with the list provided in the request.
         List<RsvpGroup> existingRsvpGroups = rsvpGroupRepository.findAllById(rsvpGroupFromRequest.stream().map(RsvpGroup::getId).collect(Collectors.toList()));

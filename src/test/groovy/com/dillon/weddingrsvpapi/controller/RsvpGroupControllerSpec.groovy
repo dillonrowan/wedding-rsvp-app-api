@@ -122,8 +122,8 @@ class RsvpGroupControllerSpec extends Specification {
             it.status == HttpStatus.BAD_REQUEST
             it.message == "Request was invalid"
             it.errors == [
-                "updateRsvpGroups.rsvpGroups[0].id": "Id is mandatory.",
-                "updateRsvpGroups.rsvpGroups[1].id": "Id is mandatory."
+                "updateRsvpGroupEmails.rsvpGroups[0].id": "Id is mandatory.",
+                "updateRsvpGroupEmails.rsvpGroups[1].id": "Id is mandatory."
             ]
         }
     }

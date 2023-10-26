@@ -15,14 +15,14 @@ class RsvpSpec extends Specification {
         setup:
         def rsvpGroup = RsvpGroup.builder()
             .id(1)
-            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(true)
             .groupLead("John Smith").build()
 
         def rsvp = Rsvp.builder()
             .id(1)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .rsvpGroup(rsvpGroup)
             .attending(false)
             .name("John Smith").build()
@@ -38,14 +38,14 @@ class RsvpSpec extends Specification {
         setup:
         def rsvpGroup = RsvpGroup.builder()
             .id(1)
-            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(true)
             .groupLead("John Smith").build()
 
         def rsvp = Rsvp.builder()
             .id(1)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .rsvpGroup(rsvpGroup)
             .attending(false)
             .name("John Smith").build()

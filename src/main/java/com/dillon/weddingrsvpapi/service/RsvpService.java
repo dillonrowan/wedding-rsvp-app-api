@@ -60,12 +60,15 @@ public class RsvpService {
         Map<Long, Rsvp> existingRsvpsMap = existingRsvps.stream()
                 .collect(Collectors.toMap(Rsvp::getId, Function.identity()));
 
-        // Update the rsvps that exist using what was provided from the request. Matching by id.
+        // Update the rsvps that exist using what was provided from the request. Matching by id. Only update attending
+        // status, dietary restrictions, and food allergies.
         for(Rsvp r : rsvpsFromRequest) {
             if(existingRsvpsMap.containsKey(r.getId())) {
                 Rsvp rsvp = existingRsvpsMap.get(r.getId());
                 rsvp.setAttending(r.getAttending());
-                existingRsvpsMap.put(r.getId(), rsvp); // replace what was queried with what was sent from request
+                rsvp.setFoodAllergies(r.getFoodAllergies());
+                rsvp.setDietaryRestrictions(r.getDietaryRestrictions());
+                existingRsvpsMap.put(r.getId(), rsvp); // Replace what was queried with what was sent from request.
             } else {
                 // If request had any ids not in database throw exception.
                 throw new RsvpNotFoundException(r.getId());

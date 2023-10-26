@@ -15,14 +15,14 @@ class RsvpGroupSpec extends Specification {
         setup:
         def rsvp = Rsvp.builder()
             .id(1)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .attending(false)
             .name("John Smith").build()
 
         def rsvpGroup = RsvpGroup.builder()
             .id(1)
             .rsvps(Set.of(rsvp))
-            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(true)
             .groupLead("John Smith").build()
@@ -31,8 +31,6 @@ class RsvpGroupSpec extends Specification {
         rsvpGroup.id == 1
         rsvpGroup.rsvps == Set.of(rsvp)
         rsvpGroup.modifyGroup
-        rsvpGroup.dietaryRestrictions == List.of( DietaryRestriction.NO_PORK )
-        rsvpGroup.foodAllergies == List.of( FoodAllergies.DAIRY )
         rsvpGroup.email == "test@test.com"
         rsvpGroup.groupLead == "John Smith"
     }
@@ -41,14 +39,14 @@ class RsvpGroupSpec extends Specification {
         setup:
         def rsvp = Rsvp.builder()
             .id(1)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .attending(false)
             .name("John Smith").build()
 
         def rsvpGroup = RsvpGroup.builder()
             .id(1)
             .rsvps(Set.of(rsvp))
-            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(true)
             .groupLead("John Smith").build()

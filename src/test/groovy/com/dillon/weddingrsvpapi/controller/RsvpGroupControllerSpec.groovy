@@ -8,11 +8,13 @@ import com.dillon.weddingrsvpapi.dto.Rsvp
 import com.dillon.weddingrsvpapi.dto.RsvpGroup
 import com.dillon.weddingrsvpapi.util.ApiError
 import com.fasterxml.jackson.databind.ObjectMapper
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
+import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
 
@@ -35,6 +37,15 @@ class RsvpGroupControllerSpec extends Specification {
     @Autowired
     ObjectMapper objectMapper
 
+    def setup() {
+        restTemplate.getRestTemplate().setInterceptors(
+            Collections.singletonList((request, body, execution) -> {
+                request.getHeaders().add("x-api-key", "secret");
+                return execution.execute(request, body);
+            } as ClientHttpRequestInterceptor)
+        )
+    }
+
     def cleanup() {
         rsvpRepository.deleteAll()
         rsvpGroupRepository.deleteAll()
@@ -44,24 +55,20 @@ class RsvpGroupControllerSpec extends Specification {
     def 'When rsvp groups are updated, it returns HttpStatus.OK'() {
         setup:
         def rsvpGroupOne = RsvpGroup.builder()
-            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(false)
             .groupLead("John Smith").build()
         def rsvpGroupOneSaved = rsvpGroupRepository.save(rsvpGroupOne)
 
         def rsvpGroupTwo = RsvpGroup.builder()
-            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(false)
             .groupLead("Jane Doe").build()
         def rsvpGroupTwoSaved = rsvpGroupRepository.save(rsvpGroupTwo)
 
         def rsvpGroupList = [
-            ["id": rsvpGroupOneSaved.id, "dietaryRestrictions": ["NO_PORK", "NO_FISH"]],
-            ["id": rsvpGroupTwoSaved.id,"dietaryRestrictions": ["NO_PORK", "NO_FISH"]]
+            ["id": rsvpGroupOneSaved.id, "email": "success@test.com"],
+            ["id": rsvpGroupTwoSaved.id,"email": "success@test.com"]
         ]
 
         when:
@@ -74,15 +81,15 @@ class RsvpGroupControllerSpec extends Specification {
 
         then:
         result.statusCode == HttpStatus.OK
-        retRsvpGroupOne.get().dietaryRestrictions == [DietaryRestriction.NO_PORK, DietaryRestriction.NO_FISH]
-        retRsvpGroupTwo.get().dietaryRestrictions == [DietaryRestriction.NO_PORK, DietaryRestriction.NO_FISH]
+        retRsvpGroupOne.get().email == "success@test.com"
+        retRsvpGroupTwo.get().email == "success@test.com"
     }
 
     def 'When an rsvp group that is not saved is updated, it returns HttpStatus.NOT_FOUND'() {
         setup:
         def rsvpGroupList = [
-            ["id": 1, "dietaryRestrictions": ["NO_PORK", "NO_FISH"]],
-            ["id": 2,"dietaryRestrictions": ["NO_PORK", "NO_FISH"]]
+            ["id": 1, "email": "success@test.com"],
+            ["id": 2, "email": "success@test.com"]
         ]
 
         when:
@@ -101,8 +108,8 @@ class RsvpGroupControllerSpec extends Specification {
     def 'When a rsvp is updated with an invalid request, it returns HttpStatus.BAD_REQUEST'() {
         given:
         def rsvpGroupList = [
-            ["dietaryRestrictions": ["NO_PORK", "NO_FISH"]],
-            ["dietaryRestrictions": ["NO_PORK", "NO_FISH"]]
+            ["modifyGroup": true],
+            ["modifyGroup": true]
         ]
 
         when:
@@ -215,11 +222,15 @@ class RsvpGroupControllerSpec extends Specification {
         given:
         def rsvpOne = Rsvp.builder()
             .attending(false)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .name("John Smith").build()
         rsvpRepository.save(rsvpOne)
 
         def rsvpTwo = Rsvp.builder()
             .attending(false)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .name("Jane Doe").build()
         rsvpRepository.save(rsvpTwo)
 

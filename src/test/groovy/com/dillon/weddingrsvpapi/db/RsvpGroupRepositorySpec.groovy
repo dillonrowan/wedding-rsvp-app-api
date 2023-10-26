@@ -26,19 +26,21 @@ class RsvpGroupRepositorySpec extends Specification {
         // expected group and members to return
         def rsvp = Rsvp.builder()
             .id(1)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .attending(false)
             .name("John Smith").build()
         rsvpRepository.save(rsvp)
         def rsvpTwo = Rsvp.builder()
             .id(2)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .attending(false)
             .name("Jane Doe").build()
         rsvpRepository.save(rsvpTwo)
 
         def rsvpGroup = RsvpGroup.builder()
             .id(1)
-            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(false)
             .rsvps(Set.of(rsvp, rsvpTwo))
@@ -48,19 +50,21 @@ class RsvpGroupRepositorySpec extends Specification {
         // group of members whose nobody's name is similar to the provided name
         def rsvpThree = Rsvp.builder()
             .id(3)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .attending(false)
             .name("Micheal James").build()
         rsvpRepository.save(rsvpThree)
         def rsvpFour = Rsvp.builder()
             .id(4)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .attending(false)
             .name("Gracie James").build()
         rsvpRepository.save(rsvpFour)
 
         def rsvpGroupTwo = RsvpGroup.builder()
             .id(2)
-            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
-            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .email("test@test.com")
             .modifyGroup(false)
             .rsvps(Set.of(rsvpThree, rsvpFour))
@@ -72,8 +76,6 @@ class RsvpGroupRepositorySpec extends Specification {
 
         then:
         rsvpGroupRet.size() == 1
-        rsvpGroupRet[0].dietaryRestrictions == [DietaryRestriction.NO_PORK]
-        rsvpGroupRet[0].foodAllergies == [FoodAllergies.DAIRY]
         rsvpGroupRet[0].email == "test@test.com"
         !rsvpGroupRet[0].modifyGroup
         rsvpGroupRet[0].groupLead == "John Smith"
@@ -82,8 +84,12 @@ class RsvpGroupRepositorySpec extends Specification {
         !rsvpGroupRet[0].rsvps[0].attending
         rsvpGroupRet[0].rsvps[0].name == "John Smith"
         rsvpGroupRet[0].rsvps[0].id == 1
+        rsvpGroupRet[0].rsvps[0].dietaryRestrictions == [DietaryRestriction.NO_PORK]
+        rsvpGroupRet[0].rsvps[0].foodAllergies == [FoodAllergies.DAIRY]
         !rsvpGroupRet[0].rsvps[1].attending
         rsvpGroupRet[0].rsvps[1].name == "Jane Doe"
         rsvpGroupRet[0].rsvps[1].id == 2
+        rsvpGroupRet[0].rsvps[1].dietaryRestrictions == [DietaryRestriction.NO_PORK]
+        rsvpGroupRet[0].rsvps[1].foodAllergies == [FoodAllergies.DAIRY]
     }
 }

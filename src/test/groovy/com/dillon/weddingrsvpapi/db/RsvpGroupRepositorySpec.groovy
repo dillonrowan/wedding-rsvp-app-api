@@ -80,16 +80,23 @@ class RsvpGroupRepositorySpec extends Specification {
         !rsvpGroupRet[0].modifyGroup
         rsvpGroupRet[0].groupLead == "John Smith"
         rsvpGroupRet[0].rsvps.size() == 2
+        rsvpGroupRet[0].rsvps.any{it.name == "John Smith"}
+        rsvpGroupRet[0].rsvps.any{it.name == "Jane Doe"}
+        Rsvp[] rsvpsArray = rsvpGroupRet[0].rsvps.toArray(new Rsvp[rsvpGroupRet[0].rsvps.size()])
 
-        !rsvpGroupRet[0].rsvps[0].attending
-        rsvpGroupRet[0].rsvps[0].name == "John Smith"
-        rsvpGroupRet[0].rsvps[0].id == 1
-        rsvpGroupRet[0].rsvps[0].dietaryRestrictions == [DietaryRestriction.NO_PORK]
-        rsvpGroupRet[0].rsvps[0].foodAllergies == [FoodAllergies.DAIRY]
-        !rsvpGroupRet[0].rsvps[1].attending
-        rsvpGroupRet[0].rsvps[1].name == "Jane Doe"
-        rsvpGroupRet[0].rsvps[1].id == 2
-        rsvpGroupRet[0].rsvps[1].dietaryRestrictions == [DietaryRestriction.NO_PORK]
-        rsvpGroupRet[0].rsvps[1].foodAllergies == [FoodAllergies.DAIRY]
+        for (Rsvp r : rsvpsArray) {
+            if (r.name == "John Smith") {
+                r.attending
+                r.id == 1
+                r.dietaryRestrictions == [DietaryRestriction.NO_PORK]
+                r.foodAllergies == [FoodAllergies.DAIRY]
+            }
+            if (r.name == "Jane Doe") {
+                !r.attending
+                r.id == 2
+                r.dietaryRestrictions == [DietaryRestriction.NO_PORK]
+                r.foodAllergies == [FoodAllergies.DAIRY]
+            }
+        }
     }
 }

@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A rsvp represents data pertaining to a single wedding guest.
  */
@@ -42,4 +45,20 @@ public class Rsvp {
      * Denotes if the guest is attending the wedding or not.
      */
     private Boolean attending;
+
+    /**
+     * The dietary restrictions belonging to the rsvp.
+     */
+    @Enumerated(EnumType.STRING)
+    @OrderColumn(name = "dietary_restrictions")
+    @Builder.Default
+    private List<DietaryRestriction> dietaryRestrictions = new ArrayList<>();
+
+    /**
+     * the food allergies belonging to the rsvp.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "food_allergies")
+    @Builder.Default
+    private List<FoodAllergies> foodAllergies = new ArrayList<>();
 }

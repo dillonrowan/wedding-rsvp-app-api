@@ -46,7 +46,7 @@ public class RsvpController {
      */
     @PostMapping("/update-rsvps")
     public void updateRsvp(@RequestBody List<@Valid Rsvp> rsvps) {
-        rsvpService.updateRsvpsAttending(rsvps);
+        rsvpService.updateRsvpAttendingAndFoodRestrictions(rsvps);
     }
 }
 

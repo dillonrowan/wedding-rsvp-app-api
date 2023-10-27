@@ -44,22 +44,6 @@ public class RsvpGroup {
     private Set<Rsvp> rsvps = new HashSet<>();
 
     /**
-     * The dietary restrictions belonging to the rsvp group.
-     */
-    @Enumerated(EnumType.STRING)
-    @OrderColumn(name = "dietary_restrictions")
-    @Builder.Default
-    private List<DietaryRestriction> dietaryRestrictions = new ArrayList<>();
-
-    /**
-     * the food allergies belonging to the rsvp group.
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "food_allergies")
-    @Builder.Default
-    private List<FoodAllergies> foodAllergies = new ArrayList<>();
-
-    /**
      * The email belonging to the rsvp group.
      */
     private String email;

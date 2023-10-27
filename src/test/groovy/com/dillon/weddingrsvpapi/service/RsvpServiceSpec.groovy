@@ -42,8 +42,8 @@ class RsvpServiceSpec extends Specification {
         notThrown(RsvpNotFoundException)
     }
 
-    // Test updateRsvpsAttending()
-    def 'When a valid rsvp does not exists and is updated, updateRsvpsAttending throws RsvpNotFoundException'() {
+    // Test updateRsvpAttendingAndFoodRestrictions()
+    def 'When a valid rsvp does not exists and is updated, updateRsvpAttendingAndFoodRestrictions throws RsvpNotFoundException'() {
         setup:
         Rsvp rsvpOne = Mock()
         rsvpOne.getId() >> 1
@@ -51,7 +51,7 @@ class RsvpServiceSpec extends Specification {
         rsvpRepository.findAllById([1]) >> []
 
         when:
-        rsvpService.updateRsvpsAttending([rsvpOne])
+        rsvpService.updateRsvpAttendingAndFoodRestrictions([rsvpOne])
 
         then:
         thrown RsvpNotFoundException
@@ -65,7 +65,7 @@ class RsvpServiceSpec extends Specification {
         rsvpRepository.findAllById([1]) >> [new Rsvp(id:  1)]
 
         when:
-        rsvpService.updateRsvpsAttending([rsvpOne])
+        rsvpService.updateRsvpAttendingAndFoodRestrictions([rsvpOne])
 
         then:
         notThrown RsvpNotFoundException

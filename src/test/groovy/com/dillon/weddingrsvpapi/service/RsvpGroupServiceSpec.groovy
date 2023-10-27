@@ -42,8 +42,8 @@ class RsvpGroupServiceSpec extends Specification {
         notThrown(RsvpGroupNotFoundException)
     }
 
-    // Test updateRsvpGroups()
-    def 'When a valid rsvp group does not exists and is updated, updateRsvpGroups throws RsvpGroupNotFoundException'() {
+    // Test updateRsvpGroupEmails()
+    def 'When a valid rsvp group does not exists and is updated, updateRsvpGroupEmails throws RsvpGroupNotFoundException'() {
         setup:
         RsvpGroup rsvpGroupOne = Mock()
         rsvpGroupOne.getId() >> 1
@@ -51,7 +51,7 @@ class RsvpGroupServiceSpec extends Specification {
         rsvpGroupRepository.findAllById([1]) >> []
 
         when:
-        rsvpGroupService.updateRsvpGroups([rsvpGroupOne])
+        rsvpGroupService.updateRsvpGroupEmails([rsvpGroupOne])
 
         then:
         thrown RsvpGroupNotFoundException
@@ -65,7 +65,7 @@ class RsvpGroupServiceSpec extends Specification {
         rsvpGroupRepository.findAllById([1]) >> [new RsvpGroup(id:  1)]
 
         when:
-        rsvpGroupService.updateRsvpGroups([rsvpGroupOne])
+        rsvpGroupService.updateRsvpGroupEmails([rsvpGroupOne])
 
         then:
         notThrown RsvpGroupNotFoundException

@@ -65,7 +65,7 @@ public class RsvpGroupService {
      * @param rsvpGroupFromRequest Rsvps groups to update.
      */
     @Transactional
-    public void updateRsvpGroups(List<RsvpGroup> rsvpGroupFromRequest) {
+    public void updateRsvpGroupEmails(List<RsvpGroup> rsvpGroupFromRequest) {
 
         // Find rsvp groups that exist with the list provided in the request.
         List<RsvpGroup> existingRsvpGroups = rsvpGroupRepository.findAllById(rsvpGroupFromRequest.stream().map(RsvpGroup::getId).collect(Collectors.toList()));
@@ -74,12 +74,10 @@ public class RsvpGroupService {
         Map<Long, RsvpGroup> existingRsvpGroupsMap = existingRsvpGroups.stream()
                 .collect(Collectors.toMap(RsvpGroup::getId, Function.identity()));
 
-        // Update the rsvp groups that exist using what was provided from the request. Matching by id.
+        // Update the rsvp groups that exist using what was provided from the request. Matching by id. Only update email.
         for(RsvpGroup r : rsvpGroupFromRequest) {
             if(existingRsvpGroupsMap.containsKey(r.getId())) {
                 RsvpGroup rsvpGroup = existingRsvpGroupsMap.get(r.getId());
-                rsvpGroup.setDietaryRestrictions(r.getDietaryRestrictions());
-                rsvpGroup.setFoodAllergies(r.getFoodAllergies());
                 rsvpGroup.setEmail(r.getEmail());
                 existingRsvpGroupsMap.put(r.getId(), rsvpGroup); // replace what was queried with what was sent from request
             } else {

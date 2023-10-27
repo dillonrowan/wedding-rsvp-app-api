@@ -2,7 +2,8 @@ package com.dillon.weddingrsvpapi.controller
 
 import com.dillon.weddingrsvpapi.db.RsvpGroupRepository
 import com.dillon.weddingrsvpapi.db.RsvpRepository
-import com.dillon.weddingrsvpapi.dto.RsvpGroup
+import com.dillon.weddingrsvpapi.dto.DietaryRestriction
+import com.dillon.weddingrsvpapi.dto.FoodAllergies
 import com.dillon.weddingrsvpapi.util.ApiError
 import com.dillon.weddingrsvpapi.dto.Rsvp
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -10,15 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
-import org.springframework.core.io.ClassPathResource
 import org.springframework.http.client.ClientHttpRequestInterceptor
-import org.springframework.jdbc.datasource.init.ScriptUtils
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.http.HttpStatus
 
 import spock.lang.Specification
 
-import java.sql.Connection
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -57,17 +55,21 @@ class RsvpControllerSpec extends Specification {
         setup:
         def rsvpOne = Rsvp.builder()
             .attending(false)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .name("John Smith").build()
         def rsvpOneSaved = rsvpRepository.save(rsvpOne)
 
         def rsvpTwo = Rsvp.builder()
             .attending(false)
+            .dietaryRestrictions(List.of( DietaryRestriction.NO_PORK ))
+            .foodAllergies(List.of( FoodAllergies.DAIRY ))
             .name("Jane Doe").build()
         def rsvpTwoSaved = rsvpRepository.save(rsvpTwo)
 
         def rsvpList = [
-            ["id": 1, "attending": true],
-            ["id": 2, "attending": true]
+            ["id": 1, "attending": true, "dietaryRestrictions": ["NO_FISH"], "foodAllergies": ["FISH"]],
+            ["id": 2, "attending": true, "dietaryRestrictions": ["NO_FISH"], "foodAllergies": ["FISH"]]
         ]
 
         when:
@@ -81,7 +83,11 @@ class RsvpControllerSpec extends Specification {
         then:
         result.statusCode == HttpStatus.OK
         retRsvpOne.get().attending == true
+        retRsvpOne.get().dietaryRestrictions == [DietaryRestriction.NO_FISH]
+        retRsvpOne.get().foodAllergies == [FoodAllergies.FISH]
         retRsvpTwo.get().attending == true
+        retRsvpTwo.get().dietaryRestrictions == [DietaryRestriction.NO_FISH]
+        retRsvpTwo.get().foodAllergies == [FoodAllergies.FISH]
     }
 
     def 'When an rsvp that is not saved is updated, it returns HttpStatus.NOT_FOUND'() {

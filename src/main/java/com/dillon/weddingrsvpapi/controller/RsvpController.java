@@ -51,7 +51,7 @@ public class RsvpController {
 
     @GetMapping("/test")
     public String testGet() {
-        return "HELLO WORLD!";
+        return "HELLO WORLD!!";
     }
 }
 

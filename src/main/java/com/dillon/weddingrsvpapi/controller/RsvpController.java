@@ -48,5 +48,10 @@ public class RsvpController {
     public void updateRsvp(@RequestBody List<@Valid Rsvp> rsvps) {
         rsvpService.updateRsvpAttendingAndFoodRestrictions(rsvps);
     }
+
+    @GetMapping("/test")
+    public String testGet() {
+        return "HELLO WORLD!";
+    }
 }
 

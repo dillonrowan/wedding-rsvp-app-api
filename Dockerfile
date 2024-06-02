@@ -2,6 +2,7 @@ FROM azul/zulu-openjdk:17 AS build
 ENV APP_HOME=/usr/app
 WORKDIR $APP_HOME
 COPY . .
+RUN chmod +x gradlew
 RUN ./gradlew bootJar
 
 FROM azul/zulu-openjdk:17 AS run

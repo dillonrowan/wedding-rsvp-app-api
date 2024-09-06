@@ -1,5 +1,6 @@
 package com.dillon.weddingrsvpapi.controller;
 
+import com.dillon.weddingrsvpapi.dto.AddDeleteRsvpDto;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
 import com.dillon.weddingrsvpapi.service.RsvpService;
 import jakarta.validation.Valid;
@@ -49,9 +50,14 @@ public class RsvpController {
         rsvpService.updateRsvpAttendingAndFoodRestrictions(rsvps);
     }
 
-    @GetMapping("/test")
-    public String testGet() {
-        return "HELLO WORLD!!";
+    @PostMapping("/rsvps/{groupId}")
+    public void addRsvpsToGroup(@PathVariable long groupId, @RequestBody AddDeleteRsvpDto addDeleteRsvpDto) {
+        rsvpService.addRsvpsToGroup(groupId, addDeleteRsvpDto);
+    }
+
+    @DeleteMapping("/rsvps/{groupId}")
+    public void deleteRsvpsFromGroup(@PathVariable long groupId, @RequestBody AddDeleteRsvpDto addDeleteRsvpDto) {
+        rsvpService.deleteRsvps(groupId, addDeleteRsvpDto);
     }
 }
 

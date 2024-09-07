@@ -4,6 +4,7 @@ import com.dillon.weddingrsvpapi.db.RsvpGroupRepository
 import com.dillon.weddingrsvpapi.db.RsvpRepository
 import com.dillon.weddingrsvpapi.dto.DietaryRestriction
 import com.dillon.weddingrsvpapi.dto.FoodAllergies
+import com.dillon.weddingrsvpapi.dto.RsvpGroup
 import com.dillon.weddingrsvpapi.util.ApiError
 import com.dillon.weddingrsvpapi.dto.Rsvp
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.http.HttpStatus
@@ -68,8 +72,8 @@ class RsvpControllerSpec extends Specification {
         def rsvpTwoSaved = rsvpRepository.save(rsvpTwo)
 
         def rsvpList = [
-            ["id": 1, "attending": true, "dietaryRestrictions": ["NO_FISH"], "foodAllergies": ["FISH"]],
-            ["id": 2, "attending": true, "dietaryRestrictions": ["NO_FISH"], "foodAllergies": ["FISH"]]
+            ["id": rsvpOneSaved.id, "attending": true, "dietaryRestrictions": ["NO_FISH"], "foodAllergies": ["FISH"]],
+            ["id": rsvpTwoSaved.id, "attending": true, "dietaryRestrictions": ["NO_FISH"], "foodAllergies": ["FISH"]]
         ]
 
         when:
@@ -107,35 +111,6 @@ class RsvpControllerSpec extends Specification {
             it.status == HttpStatus.NOT_FOUND
             it.message == "Rsvp with id 1 was not found."
             it.errors.isEmpty()
-        }
-    }
-
-    def 'When a rsvp is updated with an invalid request, it returns HttpStatus.BAD_REQUEST'() {
-        given:
-        def rsvp = Rsvp.builder()
-            .id(1)
-            .attending(false)
-            .name("John Smith").build()
-        rsvpRepository.save(rsvp)
-
-        def rsvpList = [
-            ["attending": true],
-            ["attending": true]
-        ]
-
-        when:
-        def result = restTemplate.postForEntity("http://localhost:${port}/api/update-rsvps",
-            rsvpList, String)
-
-        then:
-        result.statusCode == HttpStatus.BAD_REQUEST
-        with(objectMapper.readValue(result.body, ApiError)) {
-            it.status == HttpStatus.BAD_REQUEST
-            it.message == "Request was invalid"
-            it.errors == [
-                "updateRsvp.rsvps[0].id": "Id is mandatory.",
-                "updateRsvp.rsvps[1].id": "Id is mandatory."
-            ]
         }
     }
 

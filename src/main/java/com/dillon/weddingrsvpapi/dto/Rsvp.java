@@ -24,8 +24,7 @@ public class Rsvp {
      * The unique identifier of the rsvp.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull(message = "Id is mandatory.")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

@@ -1,13 +1,20 @@
 package com.dillon.weddingrsvpapi.service;
 
+import com.dillon.weddingrsvpapi.db.RsvpGroupRepository;
 import com.dillon.weddingrsvpapi.db.RsvpRepository;
+import com.dillon.weddingrsvpapi.dto.AddDeleteRsvpDto;
 import com.dillon.weddingrsvpapi.dto.Rsvp;
+import com.dillon.weddingrsvpapi.dto.RsvpGroup;
+import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundException;
 import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -21,13 +28,16 @@ public class RsvpService {
      */
     RsvpRepository rsvpRepository;
 
+    RsvpGroupRepository rsvpGroupRepository;
+
     /**
      * Constructor for the RsvpService class.
      *
      * @param rsvpRepository Rsvp repository service bean.
      */
-    public RsvpService(RsvpRepository rsvpRepository) {
+    public RsvpService(RsvpRepository rsvpRepository, RsvpGroupRepository rsvpGroupRepository) {
         this.rsvpRepository = rsvpRepository;
+        this.rsvpGroupRepository = rsvpGroupRepository;
     }
 
     /**
@@ -75,5 +85,47 @@ public class RsvpService {
             }
         }
         rsvpRepository.saveAll(existingRsvpsMap.values());
+    }
+
+    @Transactional
+    public void upsertRsvpsToGroup(long groupId, List<Rsvp> rsvps) {
+        RsvpGroup rsvpGroup = rsvpGroupRepository.findById(groupId).orElseThrow(() -> new RsvpGroupNotFoundException(groupId));
+        List<Rsvp> rsvpsToUpsert = new ArrayList<>();
+        for (Rsvp rsvp : rsvps) {
+            if (rsvp.getName() != null && !rsvp.getName().isEmpty()) {
+                rsvp.setRsvpGroup(rsvpGroup);
+                rsvpsToUpsert.add(rsvp);
+            }
+        }
+
+        if (!rsvpsToUpsert.isEmpty()) {
+            rsvpRepository.saveAll(rsvpsToUpsert);
+        }
+    }
+
+    @Transactional
+    public void deleteRsvps(long groupId, AddDeleteRsvpDto addDeleteRsvpDto) {
+        if (addDeleteRsvpDto.getNames().isEmpty()) {
+            return;
+        }
+
+        // Check if group exists
+        RsvpGroup rsvpGroup = rsvpGroupRepository.findById(groupId).orElseThrow(() -> new RsvpGroupNotFoundException(groupId));
+        if (rsvpGroup.isModifyGroup()) {
+
+            // Check if rsvps exists
+            List<Rsvp> rsvps = rsvpRepository.findAllByNameInAndRsvpGroupId(addDeleteRsvpDto.getNames(), groupId);
+            List<Rsvp> rsvpsToDelete = new ArrayList<>();
+            for (Rsvp rsvp : rsvps) {
+                // Do not delete the lead of the group
+                if ( !Objects.equals(rsvp.getName().toLowerCase(), rsvp.getRsvpGroup().getGroupLead().toLowerCase())) {
+                    rsvpsToDelete.add(rsvp);
+                }
+            }
+
+            if (!rsvpsToDelete.isEmpty()) {
+                rsvpRepository.deleteAll(rsvpsToDelete);
+            }
+        }
     }
 }

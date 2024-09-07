@@ -55,12 +55,14 @@ class RsvpGroupControllerSpec extends Specification {
     def 'When rsvp groups are updated, it returns HttpStatus.OK'() {
         setup:
         def rsvpGroupOne = RsvpGroup.builder()
+            .id(1)
             .email("test@test.com")
             .modifyGroup(false)
             .groupLead("John Smith").build()
         def rsvpGroupOneSaved = rsvpGroupRepository.save(rsvpGroupOne)
 
         def rsvpGroupTwo = RsvpGroup.builder()
+            .id(2)
             .email("test@test.com")
             .modifyGroup(false)
             .groupLead("Jane Doe").build()
@@ -132,6 +134,7 @@ class RsvpGroupControllerSpec extends Specification {
     def 'When a rsvp group is queried by id, it returns HttpStatus.OK'() {
         given:
         def rsvpGroup = RsvpGroup.builder()
+            .id(1)
             .modifyGroup(true)
             .groupLead("John Smith").build()
         def rsvpGroupRepositorySaved = rsvpGroupRepository.save(rsvpGroup)
@@ -187,6 +190,7 @@ class RsvpGroupControllerSpec extends Specification {
         rsvpRepository.save(rsvp)
 
         def rsvpGroup = RsvpGroup.builder()
+            .id(1)
             .modifyGroup(true)
             .rsvps(Set.of(rsvp))
             .groupLead("John Smith").build()
@@ -202,6 +206,7 @@ class RsvpGroupControllerSpec extends Specification {
     def 'When a rsvp group is queried by its name that exists no members, it returns HttpStatus.NOT_FOUND'() {
         given:
         def rsvpGroup = RsvpGroup.builder()
+            .id(1)
             .modifyGroup(true)
             .groupLead("John Smith").build()
         rsvpGroupRepository.save(rsvpGroup)
@@ -235,6 +240,7 @@ class RsvpGroupControllerSpec extends Specification {
         rsvpRepository.save(rsvpTwo)
 
         def rsvpGroup = RsvpGroup.builder()
+            .id(1)
             .rsvps(Set.of(rsvpOne, rsvpTwo))
             .modifyGroup(true)
             .groupLead("John Smith").build()

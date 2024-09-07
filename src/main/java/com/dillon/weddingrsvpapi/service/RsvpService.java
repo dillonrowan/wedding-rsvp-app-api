@@ -8,11 +8,13 @@ import com.dillon.weddingrsvpapi.dto.RsvpGroup;
 import com.dillon.weddingrsvpapi.exception.RsvpGroupNotFoundException;
 import com.dillon.weddingrsvpapi.exception.RsvpNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -94,14 +96,16 @@ public class RsvpService {
         if (rsvpGroup.isModifyGroup()) {
             List<Rsvp> rsvpsToAdd = new ArrayList<>();
             for (String name : addDeleteRsvpDto.getNames()) {
-                Rsvp rsvp = Rsvp.builder()
-                        .name(name)
-                        .rsvpGroup(rsvpGroup)
-                        .dietaryRestrictions(new ArrayList<>())
-                        .foodAllergies(new ArrayList<>())
-                        .attending(true)
-                        .build();
-                rsvpsToAdd.add(rsvp);
+                if (name != null & !Objects.equals(name, "")) {
+                    Rsvp rsvp = Rsvp.builder()
+                            .name(name)
+                            .rsvpGroup(rsvpGroup)
+                            .dietaryRestrictions(new ArrayList<>())
+                            .foodAllergies(new ArrayList<>())
+                            .attending(true)
+                            .build();
+                    rsvpsToAdd.add(rsvp);
+                }
             }
             rsvpRepository.saveAll(rsvpsToAdd);
         }
@@ -118,8 +122,16 @@ public class RsvpService {
             }
 
             // Check if rsvps exists
-            List<Rsvp> rsvps = rsvpRepository.findAllByNameIn(addDeleteRsvpDto.getNames());
-            rsvpRepository.deleteAll(rsvps);
+            List<Rsvp> rsvps = rsvpRepository.findAllByNameInAndRsvpGroupId(addDeleteRsvpDto.getNames(), groupId);
+            List<Rsvp> rsvpsToDelete = new ArrayList<>();
+            for (Rsvp rsvp : rsvps) {
+                // Do not delete the lead of the group
+                if (!Objects.equals(rsvp.getName().toLowerCase(), rsvp.getRsvpGroup().getGroupLead().toLowerCase())) {
+                    rsvpsToDelete.add(rsvp);
+                }
+            }
+
+            rsvpRepository.deleteAll(rsvpsToDelete);
         }
     }
 }

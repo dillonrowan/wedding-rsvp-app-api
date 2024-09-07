@@ -2,7 +2,7 @@ DELETE FROM rsvp;
 DELETE FROM rsvp_group;
 
 -- group one
-INSERT INTO rsvp_group (email, group_lead) VALUES ('test1@test.com', 'John Smith');
+INSERT INTO rsvp_group (email, group_lead, modify_group) VALUES ('test1@test.com', 'John Smith', true);
 INSERT INTO rsvp (dietary_restrictions, food_allergies, name, attending, group_id) VALUES (ARRAY['NO_PORK'], ARRAY['DAIRY'], 'John Smith', false, (SELECT id FROM rsvp_group WHERE group_lead = 'John Smith'));
 INSERT INTO rsvp (dietary_restrictions, food_allergies, name, attending, group_id) VALUES (ARRAY['NO_PORK'], ARRAY['DAIRY'], 'Jane Doe', false, (SELECT id FROM rsvp_group WHERE group_lead = 'John Smith'));
 

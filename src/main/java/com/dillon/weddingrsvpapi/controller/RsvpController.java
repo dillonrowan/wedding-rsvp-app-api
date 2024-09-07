@@ -51,12 +51,12 @@ public class RsvpController {
     }
 
     @PostMapping("/rsvps/{groupId}")
-    public void addRsvpsToGroup(@PathVariable long groupId, @RequestBody AddDeleteRsvpDto addDeleteRsvpDto) {
+    public void addRsvpsToGroup(@PathVariable long groupId, @RequestBody @Valid AddDeleteRsvpDto addDeleteRsvpDto) {
         rsvpService.addRsvpsToGroup(groupId, addDeleteRsvpDto);
     }
 
     @DeleteMapping("/rsvps/{groupId}")
-    public void deleteRsvpsFromGroup(@PathVariable long groupId, @RequestBody AddDeleteRsvpDto addDeleteRsvpDto) {
+    public void deleteRsvpsFromGroup(@PathVariable long groupId, @RequestBody @Valid AddDeleteRsvpDto addDeleteRsvpDto) {
         rsvpService.deleteRsvps(groupId, addDeleteRsvpDto);
     }
 }

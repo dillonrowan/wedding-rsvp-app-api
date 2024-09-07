@@ -11,5 +11,5 @@ import java.util.List;
  */
 @Repository
 public interface RsvpRepository extends JpaRepository<Rsvp, Long> {
-    List<Rsvp> findAllByNameIn(List<String> names);
+    List<Rsvp> findAllByNameInAndRsvpGroupId(List<String> names, long groupId);
 }

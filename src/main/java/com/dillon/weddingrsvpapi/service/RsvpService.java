@@ -88,50 +88,44 @@ public class RsvpService {
     }
 
     @Transactional
-    public void addRsvpsToGroup(long groupId, AddDeleteRsvpDto addDeleteRsvpDto) {
-
-        // Check if group exists
+    public void upsertRsvpsToGroup(long groupId, List<Rsvp> rsvps) {
         RsvpGroup rsvpGroup = rsvpGroupRepository.findById(groupId).orElseThrow(() -> new RsvpGroupNotFoundException(groupId));
-
-        if (rsvpGroup.isModifyGroup()) {
-            List<Rsvp> rsvpsToAdd = new ArrayList<>();
-            for (String name : addDeleteRsvpDto.getNames()) {
-                if (name != null & !Objects.equals(name, "")) {
-                    Rsvp rsvp = Rsvp.builder()
-                            .name(name)
-                            .rsvpGroup(rsvpGroup)
-                            .dietaryRestrictions(new ArrayList<>())
-                            .foodAllergies(new ArrayList<>())
-                            .attending(true)
-                            .build();
-                    rsvpsToAdd.add(rsvp);
-                }
+        List<Rsvp> rsvpsToUpsert = new ArrayList<>();
+        for (Rsvp rsvp : rsvps) {
+            if (rsvp.getName() != null && !rsvp.getName().isEmpty()) {
+                rsvp.setRsvpGroup(rsvpGroup);
+                rsvpsToUpsert.add(rsvp);
             }
-            rsvpRepository.saveAll(rsvpsToAdd);
+        }
+
+        if (!rsvpsToUpsert.isEmpty()) {
+            rsvpRepository.saveAll(rsvpsToUpsert);
         }
     }
 
     @Transactional
     public void deleteRsvps(long groupId, AddDeleteRsvpDto addDeleteRsvpDto) {
+        if (addDeleteRsvpDto.getNames().isEmpty()) {
+            return;
+        }
 
         // Check if group exists
         RsvpGroup rsvpGroup = rsvpGroupRepository.findById(groupId).orElseThrow(() -> new RsvpGroupNotFoundException(groupId));
         if (rsvpGroup.isModifyGroup()) {
-            if (!rsvpGroupRepository.existsById(groupId)) {
-                throw new RsvpGroupNotFoundException(groupId);
-            }
 
             // Check if rsvps exists
             List<Rsvp> rsvps = rsvpRepository.findAllByNameInAndRsvpGroupId(addDeleteRsvpDto.getNames(), groupId);
             List<Rsvp> rsvpsToDelete = new ArrayList<>();
             for (Rsvp rsvp : rsvps) {
                 // Do not delete the lead of the group
-                if (!Objects.equals(rsvp.getName().toLowerCase(), rsvp.getRsvpGroup().getGroupLead().toLowerCase())) {
+                if ( !Objects.equals(rsvp.getName().toLowerCase(), rsvp.getRsvpGroup().getGroupLead().toLowerCase())) {
                     rsvpsToDelete.add(rsvp);
                 }
             }
 
-            rsvpRepository.deleteAll(rsvpsToDelete);
+            if (!rsvpsToDelete.isEmpty()) {
+                rsvpRepository.deleteAll(rsvpsToDelete);
+            }
         }
     }
 }

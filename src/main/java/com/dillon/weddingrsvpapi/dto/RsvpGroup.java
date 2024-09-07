@@ -24,7 +24,7 @@ public class RsvpGroup {
      * The unique identifier of the rsvp group.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull(message = "Id is mandatory.")
     private Long id;
 

@@ -50,9 +50,9 @@ public class RsvpController {
         rsvpService.updateRsvpAttendingAndFoodRestrictions(rsvps);
     }
 
-    @PostMapping("/rsvps/{groupId}")
-    public void addRsvpsToGroup(@PathVariable long groupId, @RequestBody @Valid AddDeleteRsvpDto addDeleteRsvpDto) {
-        rsvpService.addRsvpsToGroup(groupId, addDeleteRsvpDto);
+    @PutMapping("/rsvps/{groupId}")
+    public void upsertRsvpsToGroup(@PathVariable long groupId, @RequestBody @Valid List<Rsvp> rsvps) {
+        rsvpService.upsertRsvpsToGroup(groupId, rsvps);
     }
 
     @DeleteMapping("/rsvps/{groupId}")

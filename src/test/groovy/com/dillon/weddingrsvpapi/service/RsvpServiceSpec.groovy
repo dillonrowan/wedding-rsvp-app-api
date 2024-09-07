@@ -148,7 +148,8 @@ class RsvpServiceSpec extends Specification {
         rsvpOne.getName() >> "test"
         rsvpOne.getRsvpGroup() >> rsvpGroupOne
 
-        AddDeleteRsvpDto addDeleteRsvpDto = new AddDeleteRsvpDto(["test"])
+        AddDeleteRsvpDto addDeleteRsvpDto = new AddDeleteRsvpDto()
+        addDeleteRsvpDto.setNames(["test"])
 
         rsvpGroupRepository.findById(1) >> Optional.of(rsvpGroupOne)
         rsvpRepository.findAllByNameInAndRsvpGroupId(["test"], 1L) >> [rsvpOne]
@@ -172,7 +173,8 @@ class RsvpServiceSpec extends Specification {
         rsvpOne.getName() >> "test"
         rsvpOne.getRsvpGroup() >> rsvpGroupOne
 
-        AddDeleteRsvpDto addDeleteRsvpDto = new AddDeleteRsvpDto(["test"])
+        AddDeleteRsvpDto addDeleteRsvpDto = new AddDeleteRsvpDto()
+        addDeleteRsvpDto.setNames(["test"])
 
         rsvpGroupRepository.findById(1) >> Optional.of(rsvpGroupOne)
         rsvpRepository.findAllByNameInAndRsvpGroupId(["test"], 1L) >> [rsvpOne]
@@ -196,7 +198,8 @@ class RsvpServiceSpec extends Specification {
         rsvpOne.getName() >> "test"
         rsvpOne.getRsvpGroup() >> rsvpGroupOne
 
-        AddDeleteRsvpDto addDeleteRsvpDto = new AddDeleteRsvpDto(["test"])
+        AddDeleteRsvpDto addDeleteRsvpDto = new AddDeleteRsvpDto()
+        addDeleteRsvpDto.setNames(["test"])
 
         rsvpGroupRepository.findById(1) >> Optional.of(rsvpGroupOne)
         rsvpRepository.findAllByNameInAndRsvpGroupId(["test"], 1L) >> [rsvpOne]

@@ -111,7 +111,7 @@ Tests use **Spock** + **Testcontainers** (spins up a PostgreSQL container automa
 
 You can either use the DevContainer setup or run `docker compose -f .devcontainer/docker-compose.yml up -d` to start both the API and PostgreSQL together.
 
-Or, if you only wanted to run the API container and connect it to a local PostgreSQL instance, use:
+Or, if you only wanted to run the API container and connect it to a PostgreSQL instance, use:
 
 ```bash
 # Build the image
@@ -129,7 +129,8 @@ docker run -d \
   wedding-rsvp-app-api
 ```
 
-> **Note:** Use `host.docker.internal` instead of `localhost` in the datasource URL.
+> **Note:** Use `host.docker.internal` instead of `localhost` in the datasource URL of postgres instance is running in 
+> docker locally.
 > Inside a Docker container, `localhost` refers to the container itself — not the host machine.
 > On macOS and Windows, `host.docker.internal` resolves to the host, where your PostgreSQL container's port is mapped.
 > On Linux, add `--add-host=host.docker.internal:host-gateway` to the `docker run` command.

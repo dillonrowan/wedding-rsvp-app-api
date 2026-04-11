@@ -1,0 +1,11 @@
+{
+  "name": "wedding-rsvp-app-api",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "java",
+  "workspaceFolder": "/usr/app/${localWorkspaceFolderBasename}",
+  "forwardPorts": [
+    5432,
+    8080
+  ],
+  "customizations": {}
+}
